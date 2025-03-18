@@ -32,7 +32,7 @@ st.table(df)
 # Members section with management table and checkboxes
 st.write("Members List:")
 members_list = st.session_state.members[user_type]
-selected_indices = []
+selected_members = []
 for i, member in enumerate(members_list):
     col1, col2 = st.columns([1, 4])
     with col1:
@@ -40,12 +40,13 @@ for i, member in enumerate(members_list):
     with col2:
         st.write(member)
     if checked:
-        selected_indices.append(i)
-if selected_indices and st.button("Delete Selected Members"):
-    if st.button(f"Confirm delete {len(selected_indices)} member(s)?"):
-        for i in sorted(selected_indices, reverse=True):
-            del st.session_state.members[user_type][i]
-        st.success(f"Deleted {len(selected_indices)} member(s) from {user_type}!")
+        selected_members.append(member)
+if selected_members and st.button("Delete Selected Members"):
+    if st.button(f"Confirm delete {len(selected_members)} member(s)?"):
+        for member in selected_members:
+            if member in st.session_state.members[user_type]:
+                st.session_state.members[user_type].remove(member)
+        st.success(f"Deleted {len(selected_members)} member(s) from {user_type}!")
         st.rerun()
 
 # Add/Edit member
