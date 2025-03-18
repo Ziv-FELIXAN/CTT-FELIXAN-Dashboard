@@ -22,9 +22,10 @@ st.write("Available Modules:")
 df = pd.DataFrame({"Module": user["modules"], "Status": ["Active"] * len(user["modules"])})
 st.table(df)
 
-# Members section
+# Members section with management table
 st.write("Members List:")
-st.write(members[user_type])
+members_df = pd.DataFrame({"Name": members[user_type], "Actions": ["Edit | Delete"] * len(members[user_type])})
+st.table(members_df)
 
 # Footer with system info
 st.write(f"System Status: Online | Version: VER3 | Date: 18/03/2025 | © System copyright Ziv Rotem-Bar 2025")
