@@ -40,7 +40,15 @@ for i, member in enumerate(members_list):
     with col2:
         st.write(member)
     with col3:
-        st.write(f"[:pencil:](edit) [:wastebasket:](delete) [:heavy_plus_sign:](add)")  # Icons as text links
+        if st.button("✏️", key=f"edit_{i}"):  # Edit icon
+            st.session_state.editing_member = member
+            st.experimental_rerun()
+        if st.button("🗑️", key=f"delete_{i}"):  # Delete icon
+            st.session_state.deleting_member = member
+            st.experimental_rerun()
+        if st.button("➕", key=f"add_{i}"):  # Add icon (placeholder)
+            st.session_state.adding_member = True
+            st.experimental_rerun()
     if checked:
         selected_members.append(member)
 if selected_members and st.button("Delete Selected"):
@@ -49,6 +57,13 @@ if selected_members and st.button("Delete Selected"):
         if confirm in selected_members and confirm in st.session_state.members[user_type]:
             st.session_state.members[user_type].remove(confirm)
             st.success(f"Deleted {confirm} from {user_type} members!")
+            st.rerun()
+if 'deleting_member' in st.session_state:
+    if st.button(f"Confirm delete {st.session_state.deleting_member}?"):
+        if st.session_state.deleting_member in st.session_state.members[user_type]:
+            st.session_state.members[user_type].remove(st.session_state.deleting_member)
+            st.success(f"Deleted {st.session_state.deleting_member} from {user_type} members!")
+            del st.session_state.deleting_member
             st.rerun()
 
 # Add/Edit member
