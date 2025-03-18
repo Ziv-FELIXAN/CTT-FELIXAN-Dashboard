@@ -29,10 +29,25 @@ st.write("Available Modules:")
 df = pd.DataFrame({"Module": user["modules"], "Status": ["Active"] * len(user["modules"])})
 st.table(df)
 
-# Members section with management table and edit
+# Members section with management table and checkboxes
 st.write("Members List:")
-members_df = pd.DataFrame({"Name": st.session_state.members[user_type], "Actions": ["Edit | Delete"] * len(st.session_state.members[user_type])})
-st.table(members_df)
+members_list = st.session_state.members[user_type]
+selected_members = []
+for i, member in enumerate(members_list):
+    col1, col2 = st.columns([1, 4])
+    with col1:
+        checked = st.checkbox("", key=f"checkbox_{i}")
+    with col2:
+        st.write(member)
+    if checked:
+        selected_members.append(member)
+if selected_members and st.button("Delete Selected Members"):
+    if st.button(f"Confirm delete {len(selected_members)} member(s)?"):
+        for member in selected_members:
+            if member in st.session_state.members[user_type]:
+                st.session_state.members[user_type].remove(member)
+        st.success(f"Deleted {len(selected_members)} member(s) from {user_type}!")
+        st.rerun()
 
 # Add/Edit member
 new_member = st.text_input("Add/Edit Member Name")
@@ -40,14 +55,6 @@ if st.button("Add Member"):
     if new_member and new_member not in st.session_state.members[user_type]:
         st.session_state.members[user_type].append(new_member)
         st.success(f"Added {new_member} to {user_type} members!")
-        st.rerun()
-
-# Delete member
-if st.button("Delete Selected Member"):
-    selected_member = st.session_state.members[user_type][0] if st.session_state.members[user_type] else None
-    if selected_member:
-        st.session_state.members[user_type].remove(selected_member)
-        st.success(f"Deleted {selected_member} from {user_type} members!")
         st.rerun()
 
 # Footer with system info
