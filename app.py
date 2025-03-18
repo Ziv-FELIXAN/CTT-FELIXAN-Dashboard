@@ -22,10 +22,18 @@ st.write("Available Modules:")
 df = pd.DataFrame({"Module": user["modules"], "Status": ["Active"] * len(user["modules"])})
 st.table(df)
 
-# Members section with management table
+# Members section with management table and edit
 st.write("Members List:")
 members_df = pd.DataFrame({"Name": members[user_type], "Actions": ["Edit | Delete"] * len(members[user_type])})
 st.table(members_df)
+
+# Edit member
+new_member = st.text_input("Add/Edit Member Name")
+if st.button("Add Member"):
+    if new_member and new_member not in members[user_type]:
+        members[user_type].append(new_member)
+        st.success(f"Added {new_member} to {user_type} members!")
+        st.experimental_rerun()
 
 # Footer with system info
 st.write(f"System Status: Online | Version: VER3 | Date: 18/03/2025 | © System copyright Ziv Rotem-Bar 2025")
