@@ -42,13 +42,13 @@ for i, member in enumerate(members_list):
     with col3:
         if st.button("✏️", key=f"edit_{i}"):  # Edit icon
             st.session_state.editing_member = member
-            st.experimental_rerun()
+            st.rerun()
         if st.button("🗑️", key=f"delete_{i}"):  # Delete icon
             st.session_state.deleting_member = member
-            st.experimental_rerun()
+            st.rerun()
         if st.button("➕", key=f"add_{i}"):  # Add icon (placeholder)
             st.session_state.adding_member = True
-            st.experimental_rerun()
+            st.rerun()
     if checked:
         selected_members.append(member)
 if selected_members and st.button("Delete Selected"):
