@@ -40,11 +40,11 @@ if st.button("Add Member"):
     if new_member and new_member not in st.session_state.members[user_type]:
         st.session_state.members[user_type].append(new_member)
         st.success(f"Added {new_member} to {user_type} members!")
-        st.experimental_rerun()
+        st.rerun()
 
 # Footer with system info
 st.write(f"System Status: Online | Version: VER3 | Date: 18/03/2025 | © System copyright Ziv Rotem-Bar 2025")
 
 # Refresh functionality
 if st.button("Refresh Dashboard"):
-    st.experimental_rerun()
+    st.rerun()
