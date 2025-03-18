@@ -42,6 +42,14 @@ if st.button("Add Member"):
         st.success(f"Added {new_member} to {user_type} members!")
         st.rerun()
 
+# Delete member
+if st.button("Delete Selected Member"):
+    selected_member = st.session_state.members[user_type][0] if st.session_state.members[user_type] else None
+    if selected_member:
+        st.session_state.members[user_type].remove(selected_member)
+        st.success(f"Deleted {selected_member} from {user_type} members!")
+        st.rerun()
+
 # Footer with system info
 st.write(f"System Status: Online | Version: VER3 | Date: 18/03/2025 | © System copyright Ziv Rotem-Bar 2025")
 
