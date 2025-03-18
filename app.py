@@ -1,13 +1,20 @@
 import streamlit as st
 import pandas as pd
 
-# Simulated user data and members
+# Initialize session state for members
+if 'members' not in st.session_state:
+    st.session_state.members = {
+        "Private": ["Ziv"],
+        "Business": ["ZivCorp"],
+        "Management": ["Admin"]
+    }
+
+# Simulated user data
 users = {
     "Private": {"type": "Private", "modules": ["Dashboard", "Members", "Loans Regular", "Assets", "Contracts", "Carat", "Triple C"], "color": "#4CAF50"},
     "Business": {"type": "Business", "modules": ["Dashboard", "Members", "Loans Regular", "Carat Letter of Credit", "Assets", "Contracts", "Carat", "Triple C", "Secure Transport", "Bids", "Exchange", "Meeting Room"], "color": "#F39C12"},
     "Management": {"type": "Management", "modules": ["Dashboard", "Members", "Loans Regular", "Carat Letter of Credit", "Assets", "Contracts", "Carat", "Triple C", "Insurance", "Transactions Audit", "Secure Transport", "Bids", "Exchange", "System Revenue", "Meeting Room"], "color": "#2C3E50"}
 }
-members = {"Private": ["Ziv"], "Business": ["ZivCorp"], "Management": ["Admin"]}
 
 # Dashboard UI
 st.title("CTT/FELIXAN Dashboard")
@@ -24,14 +31,14 @@ st.table(df)
 
 # Members section with management table and edit
 st.write("Members List:")
-members_df = pd.DataFrame({"Name": members[user_type], "Actions": ["Edit | Delete"] * len(members[user_type])})
+members_df = pd.DataFrame({"Name": st.session_state.members[user_type], "Actions": ["Edit | Delete"] * len(st.session_state.members[user_type])})
 st.table(members_df)
 
-# Edit member
+# Add/Edit member
 new_member = st.text_input("Add/Edit Member Name")
 if st.button("Add Member"):
-    if new_member and new_member not in members[user_type]:
-        members[user_type].append(new_member)
+    if new_member and new_member not in st.session_state.members[user_type]:
+        st.session_state.members[user_type].append(new_member)
         st.success(f"Added {new_member} to {user_type} members!")
         st.experimental_rerun()
 
