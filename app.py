@@ -29,25 +29,27 @@ st.write("Available Modules:")
 df = pd.DataFrame({"Module": user["modules"], "Status": ["Active"] * len(user["modules"])})
 st.table(df)
 
-# Members section with management table and checkboxes
+# Members section with management table and controls
 st.write("Members List:")
 members_list = st.session_state.members[user_type]
 selected_members = []
 for i, member in enumerate(members_list):
-    col1, col2 = st.columns([1, 4])
+    col1, col2, col3 = st.columns([1, 3, 2])
     with col1:
         checked = st.checkbox("", key=f"checkbox_{i}")
     with col2:
         st.write(member)
+    with col3:
+        st.write(f"[:pencil:](edit) [:wastebasket:](delete) [:heavy_plus_sign:](add)")  # Icons as text links
     if checked:
         selected_members.append(member)
-if selected_members and st.button("Delete Selected Members"):
-    if st.button(f"Confirm delete {len(selected_members)} member(s)?"):
-        for member in selected_members:
-            if member in st.session_state.members[user_type]:
-                st.session_state.members[user_type].remove(member)
-        st.success(f"Deleted {len(selected_members)} member(s) from {user_type}!")
-        st.rerun()
+if selected_members and st.button("Delete Selected"):
+    confirm = st.text_input("Confirm deletion by typing the member name")
+    if st.button("Confirm Delete"):
+        if confirm in selected_members and confirm in st.session_state.members[user_type]:
+            st.session_state.members[user_type].remove(confirm)
+            st.success(f"Deleted {confirm} from {user_type} members!")
+            st.rerun()
 
 # Add/Edit member
 new_member = st.text_input("Add/Edit Member Name")
