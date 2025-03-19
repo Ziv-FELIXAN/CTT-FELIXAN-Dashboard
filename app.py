@@ -4,12 +4,20 @@ import json
 from datetime import datetime
 import sys
 import os
+import importlib.util
 
 # Add the 'static/modules' directory to the Python path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'static', 'modules')))
 
-# Import the module
-from static.modules.members_private import display_members_private
+# Dynamically import the module
+module_path = os.path.join(os.path.dirname(__file__), 'static', 'modules', 'members_private.py')
+spec = importlib.util.spec_from_file_location("members_private", module_path)
+if spec is None:
+    raise ImportError("Cannot find module members_private at path: " + module_path)
+module = importlib.util.module_from_spec(spec)
+sys.modules["members_private"] = module
+spec.loader.exec_module(module)
+display_members_private = module.display_members_private
 
 # Set page layout to wide
 st.set_page_config(layout="wide")
