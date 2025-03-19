@@ -12,11 +12,13 @@ users = {
 }
 
 # Header
-st.markdown(f"""
-<div style='background-color: {users[st.session_state.interface_type]['color']}; padding: 10px; text-align: center;'>
-    <h1 style='color: white;'>CTT/FELIXAN System Ver3</h1>
-</div>
-""", unsafe_allow_html=True)
+header_color = users[st.session_state.interface_type]['color']
+st.markdown(
+    f"<div style='background-color: {header_color}; padding: 10px; text-align: center;'>"
+    "<h1 style='color: white;'>CTT/FELIXAN System Ver3</h1>"
+    "</div>",
+    unsafe_allow_html=True
+)
 
 # Navigation buttons
 col1, col2, col3 = st.columns(3)
@@ -46,8 +48,9 @@ st.write("Main Content Area:")
 st.write("Select a module to view content.")
 
 # Footer
-st.markdown("""
-<div style='background-color: #f1f1f1; padding: 10px; text-align: center;'>
-    <p>System Status: Online | Version: VER3 | Date: 18/03/2025 | © System copyright Ziv Rotem-Bar 2025</p>
-</div>
-""", unsafe_allow_html=True)
+st.markdown(
+    "<div style='background-color: #f1f1f1; padding: 10px; text-align: center;'>"
+    "<p>System Status: Online | Version: VER3 | Date: 18/03/2025 | © System copyright Ziv Rotem-Bar 2025</p>"
+    "</div>",
+    unsafe_allow_html=True
+)
