@@ -55,32 +55,32 @@ st.markdown(
 st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
 
 # Navigation buttons
-st.markdown("<style>.stButton>button {margin-right: 5px;}</style>", unsafe_allow_html=True)
-col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
-with col1:
+st.markdown("<style>.nav-buttons {display: flex; justify-content: flex-start; gap: 5px;}</style>", unsafe_allow_html=True)
+nav_cols = st.columns([1, 1, 1, 1])
+with nav_cols[0]:
     if st.button("FELIXAN Management"):
         st.session_state['interface_type'] = "Management"
         st.session_state['selected_module'] = "Dashboard"
         st.rerun()
-with col2:
+with nav_cols[1]:
     if st.button("Private Individuals"):
         st.session_state['interface_type'] = "Private"
         st.session_state['selected_module'] = "Dashboard"
         st.rerun()
-with col3:
+with nav_cols[2]:
     if st.button("Business"):
         st.session_state['interface_type'] = "Business"
         st.session_state['selected_module'] = "Dashboard"
         st.rerun()
-with col4:
+with nav_cols[3]:
     about_option = st.selectbox("About", ["Select", "System Info", "Help"], key="about_dropdown")
     if about_option != "Select":
         st.write(f"Selected: {about_option} (Content to be added later)")
 
 # Module navigation
 st.write("Modules:")
+st.markdown("<style>.module-buttons {display: flex; justify-content: flex-start; gap: 5px;}</style>", unsafe_allow_html=True)
 modules = st.session_state['users'][st.session_state['interface_type']]["modules"]
-st.markdown("<style>.stButton>button {margin-right: 5px;}</style>", unsafe_allow_html=True)
 module_cols = st.columns(len(modules))
 for i, module in enumerate(modules):
     with module_cols[i]:
