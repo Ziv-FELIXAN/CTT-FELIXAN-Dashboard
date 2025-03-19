@@ -29,7 +29,6 @@ current_data = json.dumps(users)
 c.execute("INSERT OR REPLACE INTO versions (version, data, timestamp) VALUES (?, ?, ?)",
           (current_version, current_data, datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
 conn.commit()
-conn.close()
 
 # Header
 header_color = users[st.session_state['interface_type']]['color']
@@ -71,6 +70,15 @@ for i, module in enumerate(modules):
 st.write("Main Content Area:")
 st.write("Select a module to view content.")
 
+# Version management section
+st.write("Version Management:")
+c.execute("SELECT version, timestamp FROM versions")
+versions = c.fetchall()
+for version, timestamp in versions:
+    st.write(f"Version: {version} | Saved at: {timestamp}")
+if st.button("Restore Version"):
+    st.write("Version restoration not implemented yet.")
+
 # Footer
 st.markdown(
     f"<div style='background-color: #f1f1f1; padding: 10px; text-align: center;'>"
@@ -78,3 +86,5 @@ st.markdown(
     "</div>",
     unsafe_allow_html=True
 )
+
+conn.close()
