@@ -9,7 +9,7 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'modules')))
 
 # Import the module
-from members_private import display_members_private
+from modules.members_private import display_members_private
 
 # Set page layout to wide
 st.set_page_config(layout="wide")
