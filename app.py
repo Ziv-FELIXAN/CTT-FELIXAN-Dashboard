@@ -29,6 +29,12 @@ c.execute("INSERT OR REPLACE INTO versions (version, data, timestamp) VALUES (?,
           (current_version, current_data, datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
 conn.commit()
 
+# Data management with SQLite
+data_conn = sqlite3.connect('data.db', check_same_thread=False)
+data_c = data_conn.cursor()
+data_c.execute('''CREATE TABLE IF NOT EXISTS members (id INTEGER PRIMARY KEY AUTOINCREMENT, user_type TEXT, name TEXT, status TEXT)''')
+data_conn.commit()
+
 # Header
 header_color = st.session_state['users'][st.session_state['interface_type']]['color']
 st.markdown(
@@ -97,3 +103,4 @@ st.markdown(
 )
 
 conn.close()
+data_conn.close()
