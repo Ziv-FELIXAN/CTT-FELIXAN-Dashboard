@@ -50,42 +50,6 @@ html_content = html_content.replace(
 # Render HTML
 st.markdown(html_content, unsafe_allow_html=True)
 
-# Navigation buttons (ensure they match HTML IDs)
-nav_container = st.container()
-with nav_container:
-    col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
-    with col1:
-        if st.button("FELIXAN Management", key="management-btn"):
-            st.session_state['interface_type'] = "Management"
-            st.session_state['selected_module'] = "Dashboard"
-            st.rerun()
-    with col2:
-        if st.button("Private Individuals", key="private-btn"):
-            st.session_state['interface_type'] = "Private"
-            st.session_state['selected_module'] = "Dashboard"
-            st.rerun()
-    with col3:
-        if st.button("Business", key="business-btn"):
-            st.session_state['interface_type'] = "Business"
-            st.session_state['selected_module'] = "Dashboard"
-            st.rerun()
-    with col4:
-        about_option = st.selectbox("About", ["Select", "System Info", "Help"], key="about_dropdown")
-        if about_option != "Select":
-            st.write(f"Selected: {about_option} (Content to be added later)")
-
-# Module navigation
-module_container = st.container()
-with module_container:
-    st.write("Modules:")
-    modules = st.session_state['users'][st.session_state['interface_type']]["modules"]
-    module_cols = st.columns(len(modules))
-    for i, module in enumerate(modules):
-        with module_cols[i]:
-            if st.button(module, key=f"module_{i}"):
-                st.session_state['selected_module'] = module
-                st.rerun()
-
 # Main content area with tabs
 tabs = ["Overview", "Manage Objects", "Checklist", "Related Assets"]
 selected_tab = st.tabs(tabs)
