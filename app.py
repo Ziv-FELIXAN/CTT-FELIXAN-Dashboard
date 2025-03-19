@@ -79,21 +79,40 @@ for i, module in enumerate(modules):
             st.rerun()
 
 # Main content area with tabs
-st.write("Main Content Area:")
 tabs = ["Overview", "Manage Objects", "Checklist", "Related Assets"]
 selected_tab = st.tabs(tabs)
 with selected_tab[0]:
-    st.write(f"{st.session_state['selected_module']} Overview")
-    st.write("Content for Overview tab (to be implemented).")
+    st.markdown(
+        "<div style='border: 1px solid #e6e6e6; padding: 10px; border-radius: 5px;'>"
+        f"<h3>{st.session_state['selected_module']} Overview</h3>"
+        "Content for Overview tab (to be implemented)."
+        "</div>",
+        unsafe_allow_html=True
+    )
 with selected_tab[1]:
-    st.write(f"Manage {st.session_state['selected_module']} Objects")
-    st.write("Content for Manage Objects tab (to be implemented).")
+    st.markdown(
+        "<div style='border: 1px solid #e6e6e6; padding: 10px; border-radius: 5px;'>"
+        f"<h3>Manage {st.session_state['selected_module']} Objects</h3>"
+        "Content for Manage Objects tab (to be implemented)."
+        "</div>",
+        unsafe_allow_html=True
+    )
 with selected_tab[2]:
-    st.write(f"{st.session_state['selected_module']} Checklist")
-    st.write("Content for Checklist tab (to be implemented).")
+    st.markdown(
+        "<div style='border: 1px solid #e6e6e6; padding: 10px; border-radius: 5px;'>"
+        f"<h3>{st.session_state['selected_module']} Checklist</h3>"
+        "Content for Checklist tab (to be implemented)."
+        "</div>",
+        unsafe_allow_html=True
+    )
 with selected_tab[3]:
-    st.write(f"Related Assets for {st.session_state['selected_module']}")
-    st.write("Content for Related Assets tab (to be implemented).")
+    st.markdown(
+        "<div style='border: 1px solid #e6e6e6; padding: 10px; border-radius: 5px;'>"
+        f"<h3>Related Assets for {st.session_state['selected_module']}</h3>"
+        "Content for Related Assets tab (to be implemented)."
+        "</div>",
+        unsafe_allow_html=True
+    )
 
 # Footer
 st.markdown(
