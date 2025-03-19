@@ -2,22 +2,30 @@ import streamlit as st
 import sqlite3
 import json
 from datetime import datetime
-import sys
 import os
 import importlib.util
+import path_manager
 
-# Add the 'static/modules' directory to the Python path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'static', 'modules')))
+# Check if devcontainer.json exists and has module paths, if not, update it
+devcontainer_path = os.path.join(os.path.dirname(__file__), 'devcontainer', 'devcontainer.json')
+if not os.path.exists(devcontainer_path) or 'module_paths' not in json.load(open(devcontainer_path)):
+    path_manager.update_module_paths()
 
-# Dynamically import the module
-module_path = os.path.join(os.path.dirname(__file__), 'static', 'modules', 'members_private.py')
-spec = importlib.util.spec_from_file_location("members_private", module_path)
-if spec is None:
-    raise ImportError("Cannot find module members_private at path: " + module_path)
-module = importlib.util.module_from_spec(spec)
-sys.modules["members_private"] = module
-spec.loader.exec_module(module)
-display_members_private = module.display_members_private
+# Load module paths from devcontainer.json
+with open(devcontainer_path, 'r') as f:
+    devcontainer_config = json.load(f)
+module_paths = devcontainer_config.get('module_paths', {})
+
+# Dynamically import the members_private module
+if 'members_private' in module_paths:
+    spec = importlib.util.spec_from_file_location("members_private", module_paths['members_private'])
+    if spec is None:
+        raise ImportError("Cannot find module members_private at path: " + module_paths['members_private'])
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    display_members_private = module.display_members_private
+else:
+    raise ImportError("Module members_private not found in devcontainer.json")
 
 # Set page layout to wide
 st.set_page_config(layout="wide")
