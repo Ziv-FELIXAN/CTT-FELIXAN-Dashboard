@@ -72,12 +72,23 @@ st.write("Select a module to view content.")
 
 # Version management section
 st.write("Version Management:")
-c.execute("SELECT version, timestamp FROM versions")
+c.execute("SELECT version, timestamp FROM versions ORDER BY timestamp DESC")
 versions = c.fetchall()
-for version, timestamp in versions:
-    st.write(f"Version: {version} | Saved at: {timestamp}")
-if st.button("Restore Version"):
-    st.write("Version restoration not implemented yet.")
+if versions:
+    selected_version = st.selectbox("Select Version to Restore", [f"{v[0]} (Saved at: {v[1]})" for v in versions])
+    if st.button("Restore Selected Version"):
+        confirm = st.button("Confirm Restore? This will overwrite current data!")
+        if confirm:
+            version_to_restore = selected_version.split(" ")[0]
+            c.execute("SELECT data FROM versions WHERE version = ?", (version_to_restore,))
+            data = c.fetchone()
+            if data:
+                global users
+                users = json.loads(data[0])
+                st.success(f"Restored version {version_to_restore}!")
+                st.rerun()
+else:
+    st.write("No versions available to restore.")
 
 # Footer
 st.markdown(
