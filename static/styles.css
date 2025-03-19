@@ -13,6 +13,7 @@
     justify-content: flex-start;
     gap: 5px;
     margin-top: 20px;
+    flex-wrap: wrap;
 }
 .nav-buttons button {
     margin-right: 5px;
@@ -30,6 +31,7 @@
     justify-content: flex-start;
     gap: 5px;
     margin-top: 10px;
+    flex-wrap: wrap;
 }
 .module-nav button {
     margin-right: 5px;
