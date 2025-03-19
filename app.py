@@ -133,6 +133,39 @@ st.session_state['tabs'] = st.tabs(["Overview", "Manage Objects", "Checklist", "
 # Display module content based on selection
 if st.session_state['selected_module'] == "Members" and st.session_state['interface_type'] == "Private":
     display_members_private()
+elif st.session_state['selected_module'] == "Dashboard":
+    with st.session_state['tabs'][0]:
+        st.markdown(
+            "<div class='module-content'>"
+            "<h3>Dashboard Overview</h3>"
+            "<p>Welcome to your Dashboard! Here you can see a summary of your activities and status.</p>"
+            "</div>",
+            unsafe_allow_html=True
+        )
+    with st.session_state['tabs'][1]:
+        st.markdown(
+            "<div class='module-content'>"
+            "<h3>Manage Dashboard Objects</h3>"
+            "<p>No objects to manage in the Dashboard.</p>"
+            "</div>",
+            unsafe_allow_html=True
+        )
+    with st.session_state['tabs'][2]:
+        st.markdown(
+            "<div class='module-content'>"
+            "<h3>Dashboard Checklist</h3>"
+            "<p>No checklist items for the Dashboard.</p>"
+            "</div>",
+            unsafe_allow_html=True
+        )
+    with st.session_state['tabs'][3]:
+        st.markdown(
+            "<div class='module-content'>"
+            "<h3>Related Assets for Dashboard</h3>"
+            "<p>No related assets for the Dashboard.</p>"
+            "</div>",
+            unsafe_allow_html=True
+        )
 else:
     with st.session_state['tabs'][0]:
         st.markdown(
