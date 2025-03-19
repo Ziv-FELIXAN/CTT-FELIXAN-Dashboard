@@ -44,7 +44,7 @@ st.markdown(
     "<h1 style='color: white;'>CTT/FELIXAN System Ver3</h1>"
     "<div style='position: absolute; top: 10px; right: 10px;'>"
     "<button style='background: none; border: none; color: white; font-size: 20px; cursor: pointer;' onclick='alert(\"Preferences not implemented yet.\")'>⚙️</button>"
-    "&nbsp;"
+    " "
     "<button style='background: none; border: none; color: white; font-size: 20px; cursor: pointer;' onclick='alert(\"User Management not implemented yet.\")'>👤</button>"
     "</div>"
     "</div>",
@@ -55,6 +55,7 @@ st.markdown(
 st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
 
 # Navigation buttons
+st.markdown("<style>.stButton>button {margin-right: 5px;}</style>", unsafe_allow_html=True)
 col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
 with col1:
     if st.button("FELIXAN Management"):
@@ -79,10 +80,10 @@ with col4:
 # Module navigation
 st.write("Modules:")
 modules = st.session_state['users'][st.session_state['interface_type']]["modules"]
+st.markdown("<style>.stButton>button {margin-right: 5px;}</style>", unsafe_allow_html=True)
 module_cols = st.columns(len(modules))
 for i, module in enumerate(modules):
     with module_cols[i]:
-        st.markdown("<style>.stButton>button {margin-right: 5px;}</style>", unsafe_allow_html=True)
         if st.button(module, key=f"module_{i}"):
             st.session_state['selected_module'] = module
             st.rerun()
