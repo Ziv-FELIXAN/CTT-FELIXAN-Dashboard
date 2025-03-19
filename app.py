@@ -132,7 +132,7 @@ st.session_state['tabs'] = st.tabs(["Overview", "Manage Objects", "Checklist", "
 
 # Display module content based on selection
 if st.session_state['selected_module'] == "Members" and st.session_state['interface_type'] == "Private":
-    display_members_private()
+    display_members_private(data_conn, data_c)
 elif st.session_state['selected_module'] == "Dashboard":
     with st.session_state['tabs'][0]:
         st.markdown(
@@ -227,5 +227,6 @@ if versions:
 else:
     st.write("No versions available to restore.")
 
+# Close database connections
 conn.close()
 data_conn.close()
