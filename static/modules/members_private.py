@@ -157,10 +157,13 @@ def display_members_private():
             with col4:
                 st.write(activity['amount'] if activity['amount'] else 'N/A')
             with col5:
-                if st.button("✏️", key=f"edit_button_{activity['id']}"):
-                    st.session_state[f"edit_activity_{activity['id']}"] = True
-                if st.button("🗑️", key=f"delete_button_{activity['id']}"):
-                    st.session_state[f"delete_activity_{activity['id']}"] = True
+                col_edit, col_delete = st.columns([1, 1])
+                with col_edit:
+                    if st.button("✏️", key=f"edit_button_{activity['id']}"):
+                        st.session_state[f"edit_activity_{activity['id']}"] = True
+                with col_delete:
+                    if st.button("🗑️", key=f"delete_button_{activity['id']}"):
+                        st.session_state[f"delete_activity_{activity['id']}"] = True
 
             # Edit activity
             if f"edit_activity_{activity['id']}" in st.session_state and st.session_state[f"edit_activity_{activity['id']}"]:
@@ -261,10 +264,13 @@ def display_members_private():
             with col4:
                 st.markdown(f"<span style='color: red;'>{activity['amount'] if activity['amount'] else 'N/A'}</span>", unsafe_allow_html=True)
             with col5:
-                if st.button("🔄", key=f"restore_button_{activity['id']}"):
-                    st.session_state[f"restore_activity_{activity['id']}"] = True
-                if st.button("🗑️", key=f"permanent_delete_button_{activity['id']}"):
-                    st.session_state[f"permanent_delete_activity_{activity['id']}"] = True
+                col_restore, col_delete = st.columns([1, 1])
+                with col_restore:
+                    if st.button("🔄", key=f"restore_button_{activity['id']}"):
+                        st.session_state[f"restore_activity_{activity['id']}"] = True
+                with col_delete:
+                    if st.button("🗑️", key=f"permanent_delete_button_{activity['id']}"):
+                        st.session_state[f"permanent_delete_activity_{activity['id']}"] = True
 
             # Restore activity
             if f"restore_activity_{activity['id']}" in st.session_state and st.session_state[f"restore_activity_{activity['id']}"]:
