@@ -122,12 +122,8 @@ def display_members_private():
             unsafe_allow_html=True
         )
 
-        # Store selected activities in session state
-        if 'selected_activities' not in st.session_state:
-            st.session_state['selected_activities'] = []
-
-        # Create table header using st.columns
-        col1, col2, col3, col4, col5 = st.columns([1, 3, 2, 2, 2])
+        # Create table header using st.columns with adjusted ratios to compact the table
+        col1, col2, col3, col4, col5 = st.columns([0.5, 2, 1.5, 1.5, 1])
         with col1:
             st.markdown("**Select**")
         with col2:
@@ -141,14 +137,16 @@ def display_members_private():
 
         # Display each activity as a row
         for i, activity in enumerate(activities):
-            col1, col2, col3, col4, col5 = st.columns([1, 3, 2, 2, 2])
+            col1, col2, col3, col4, col5 = st.columns([0.5, 2, 1.5, 1.5, 1])
             with col1:
-                checked = st.checkbox("", value=activity['id'] in st.session_state['selected_activities'], key=f"active_checkbox_{activity['id']}")
+                checked = st.checkbox("", value=activity['id'] in st.session_state.get('selected_activities', []), key=f"active_checkbox_{activity['id']}")
                 if checked:
+                    if 'selected_activities' not in st.session_state:
+                        st.session_state['selected_activities'] = []
                     if activity['id'] not in st.session_state['selected_activities']:
                         st.session_state['selected_activities'].append(activity['id'])
                 else:
-                    if activity['id'] in st.session_state['selected_activities']:
+                    if 'selected_activities' in st.session_state and activity['id'] in st.session_state['selected_activities']:
                         st.session_state['selected_activities'].remove(activity['id'])
             with col2:
                 st.write(activity['activity'])
@@ -203,22 +201,6 @@ def display_members_private():
                         else:
                             st.error("Activity name does not match. Action cancelled.")
 
-        # Delete selected activities (move to non-active)
-        if st.button("Move Selected to Non-Active"):
-            if st.session_state['selected_activities']:
-                confirm = st.button("Confirm Move? This will move selected activities to Non-Active Projects!")
-                if confirm:
-                    for activity_id in st.session_state['selected_activities']:
-                        for act in st.session_state['activities']:
-                            if act['id'] == activity_id:
-                                act['is_active'] = False
-                                break
-                    st.session_state['selected_activities'] = []  # Clear selection
-                    st.success(f"Moved {len(st.session_state['selected_activities'])} activities to Non-Active Projects!")
-                    st.rerun()
-            else:
-                st.error("No activities selected to move.")
-
         # Display non-active activities table
         st.subheader("Non-Active Projects")
         st.markdown(
@@ -230,8 +212,8 @@ def display_members_private():
             unsafe_allow_html=True
         )
 
-        # Create table header using st.columns
-        col1, col2, col3, col4, col5 = st.columns([1, 3, 2, 2, 2])
+        # Create table header using st.columns with adjusted ratios to compact the table
+        col1, col2, col3, col4, col5 = st.columns([0.5, 2, 1.5, 1.5, 1])
         with col1:
             st.markdown("**Select**")
         with col2:
@@ -248,7 +230,7 @@ def display_members_private():
             st.session_state['selected_non_active_activities'] = []
 
         for i, activity in enumerate(non_active_activities):
-            col1, col2, col3, col4, col5 = st.columns([1, 3, 2, 2, 2])
+            col1, col2, col3, col4, col5 = st.columns([0.5, 2, 1.5, 1.5, 1])
             with col1:
                 checked = st.checkbox("", value=activity['id'] in st.session_state['selected_non_active_activities'], key=f"non_active_checkbox_{activity['id']}")
                 if checked:
@@ -306,34 +288,6 @@ def display_members_private():
                             st.rerun()
                         else:
                             st.error("Activity name does not match. Deletion cancelled.")
-
-        # Restore selected non-active activities
-        if st.button("Restore Selected to Active"):
-            if st.session_state['selected_non_active_activities']:
-                confirm = st.button("Confirm Restore? This will move selected activities to Active Projects!")
-                if confirm:
-                    for activity_id in st.session_state['selected_non_active_activities']:
-                        for act in st.session_state['activities']:
-                            if act['id'] == activity_id:
-                                act['is_active'] = True
-                                break
-                    st.session_state['selected_non_active_activities'] = []  # Clear selection
-                    st.success(f"Restored {len(st.session_state['selected_non_active_activities'])} activities to Active Projects!")
-                    st.rerun()
-            else:
-                st.error("No activities selected to restore.")
-
-        # Permanently delete selected non-active activities
-        if st.button("Permanently Delete Selected"):
-            if st.session_state['selected_non_active_activities']:
-                confirm = st.button("Confirm Permanent Delete? This will permanently remove selected activities!")
-                if confirm:
-                    st.session_state['activities'] = [act for act in st.session_state['activities'] if act['id'] not in st.session_state['selected_non_active_activities']]
-                    st.session_state['selected_non_active_activities'] = []  # Clear selection
-                    st.success(f"Permanently deleted {len(st.session_state['selected_non_active_activities'])} activities!")
-                    st.rerun()
-            else:
-                st.error("No activities selected for permanent deletion.")
 
     # Checklist tab
     with st.session_state['tabs'][2]:
