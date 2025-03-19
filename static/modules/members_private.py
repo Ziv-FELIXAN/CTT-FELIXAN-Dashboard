@@ -23,6 +23,7 @@ def display_members_private():
         activity TEXT,
         date TEXT,
         amount TEXT,
+        is_active BOOLEAN DEFAULT 1,
         FOREIGN KEY (user_id) REFERENCES members(id)
     )''')
     c.execute('''CREATE TABLE IF NOT EXISTS checklist (
@@ -63,15 +64,19 @@ def display_members_private():
 
     # Check if activities exist for the user, if not, insert default activities
     user_id = user[0]
-    c.execute("SELECT * FROM activities WHERE user_id = ?", (user_id,))
+    c.execute("SELECT * FROM activities WHERE user_id = ? AND is_active = 1", (user_id,))
     activities = c.fetchall()
     if not activities:
-        c.executemany("INSERT INTO activities (user_id, activity, date, amount) VALUES (?, ?, ?, ?)",
-                      [(user_id, "Loan Application Submitted", "2025-03-01", None),
-                       (user_id, "Carat Transaction", "2025-03-02", "$50,000")])
+        c.executemany("INSERT INTO activities (user_id, activity, date, amount, is_active) VALUES (?, ?, ?, ?, ?)",
+                      [(user_id, "Loan Application Submitted", "2025-03-01", None, 1),
+                       (user_id, "Carat Transaction", "2025-03-02", "$50,000", 1)])
         conn.commit()
-        c.execute("SELECT * FROM activities WHERE user_id = ?", (user_id,))
+        c.execute("SELECT * FROM activities WHERE user_id = ? AND is_active = 1", (user_id,))
         activities = c.fetchall()
+
+    # Check for non-active activities
+    c.execute("SELECT * FROM activities WHERE user_id = ? AND is_active = 0", (user_id,))
+    non_active_activities = c.fetchall()
 
     # Check if checklist exists for the user, if not, insert default checklist
     c.execute("SELECT * FROM checklist WHERE user_id = ?", (user_id,))
@@ -158,15 +163,16 @@ def display_members_private():
             submit_button = st.form_submit_button("Add Activity")
             if submit_button:
                 if activity_type and activity_date:
-                    c.execute("INSERT INTO activities (user_id, activity, date, amount) VALUES (?, ?, ?, ?)",
-                              (user_id, activity_type, activity_date, activity_amount if activity_amount else None))
+                    c.execute("INSERT INTO activities (user_id, activity, date, amount, is_active) VALUES (?, ?, ?, ?, ?)",
+                              (user_id, activity_type, activity_date, activity_amount if activity_amount else None, 1))
                     conn.commit()
                     st.success("Activity added successfully!")
                     st.rerun()
                 else:
                     st.error("Please fill in all required fields (Activity Type and Date).")
 
-        # Display activities table
+        # Display active activities table
+        st.subheader("Active Activities")
         st.markdown(
             "<table style='width: 100%; border-collapse: collapse;'>"
             "<tr style='background-color: #f1f1f1;'>"
@@ -184,17 +190,10 @@ def display_members_private():
 
         for i, activity in enumerate(activities):
             # Use a unique key for each checkbox
-            checked = st.session_state.get(f"activity_{activity[0]}", False)
-            if st.checkbox("", value=checked, key=f"activity_{activity[0]}"):
-                if activity[0] not in st.session_state['selected_activities']:
-                    st.session_state['selected_activities'].append(activity[0])
-            else:
-                if activity[0] in st.session_state['selected_activities']:
-                    st.session_state['selected_activities'].remove(activity[0])
-
+            checked = activity[0] in st.session_state['selected_activities']
             st.markdown(
                 f"<tr>"
-                f"<td style='border: 1px solid #ddd; padding: 8px;'>{'' if not checked else '✔'}</td>"
+                f"<td style='border: 1px solid #ddd; padding: 8px;'><input type='checkbox' {'checked' if checked else ''} onclick=\"st.session_state['checkbox_{activity[0]}'] = !st.session_state.get('checkbox_{activity[0]}', false); st.rerun()\"></td>"
                 f"<td style='border: 1px solid #ddd; padding: 8px;'>{activity[2]}</td>"
                 f"<td style='border: 1px solid #ddd; padding: 8px;'>{activity[3]}</td>"
                 f"<td style='border: 1px solid #ddd; padding: 8px;'>{activity[4] if activity[4] else 'N/A'}</td>"
@@ -204,6 +203,15 @@ def display_members_private():
                 f"</td></tr>",
                 unsafe_allow_html=True
             )
+
+            # Update selected activities based on checkbox state
+            if f"checkbox_{activity[0]}" in st.session_state:
+                if st.session_state[f"checkbox_{activity[0]}"]:
+                    if activity[0] not in st.session_state['selected_activities']:
+                        st.session_state['selected_activities'].append(activity[0])
+                else:
+                    if activity[0] in st.session_state['selected_activities']:
+                        st.session_state['selected_activities'].remove(activity[0])
 
             # Edit activity
             if f"edit_activity_{activity[0]}" in st.session_state and st.session_state[f"edit_activity_{activity[0]}"]:
@@ -221,38 +229,144 @@ def display_members_private():
                         st.session_state[f"edit_activity_{activity[0]}"] = False
                         st.rerun()
 
-            # Delete activity
+            # Delete activity (move to non-active)
             if f"delete_activity_{activity[0]}" in st.session_state and st.session_state[f"delete_activity_{activity[0]}"]:
                 with st.form(key=f"delete_activity_form_{activity[0]}"):
                     st.subheader(f"Delete Activity: {activity[2]}")
-                    st.write("Are you sure you want to delete this activity?")
+                    st.write("Are you sure you want to move this activity to Non-Active Projects?")
                     confirm_delete = st.text_input("Type the activity name to confirm", placeholder=activity[2])
-                    delete_submit = st.form_submit_button("Confirm Delete")
+                    delete_submit = st.form_submit_button("Confirm Move to Non-Active")
                     if delete_submit:
                         if confirm_delete == activity[2]:
+                            c.execute("UPDATE activities SET is_active = 0 WHERE id = ?", (activity[0],))
+                            conn.commit()
+                            st.success("Activity moved to Non-Active Projects!")
+                            st.session_state[f"delete_activity_{activity[0]}"] = False
+                            st.rerun()
+                        else:
+                            st.error("Activity name does not match. Action cancelled.")
+
+        st.markdown("</table>", unsafe_allow_html=True)
+
+        # Delete selected activities (move to non-active)
+        if st.button("Move Selected to Non-Active"):
+            if st.session_state['selected_activities']:
+                confirm = st.button("Confirm Move? This will move selected activities to Non-Active Projects!")
+                if confirm:
+                    for activity_id in st.session_state['selected_activities']:
+                        c.execute("UPDATE activities SET is_active = 0 WHERE id = ?", (activity_id,))
+                    conn.commit()
+                    st.session_state['selected_activities'] = []  # Clear selection
+                    st.success(f"Moved {len(st.session_state['selected_activities'])} activities to Non-Active Projects!")
+                    st.rerun()
+            else:
+                st.error("No activities selected to move.")
+
+        # Display non-active activities table
+        st.subheader("Non-Active Projects")
+        st.markdown(
+            "<table style='width: 100%; border-collapse: collapse;'>"
+            "<tr style='background-color: #f1f1f1;'>"
+            "<th style='border: 1px solid #ddd; padding: 8px;'>Select</th>"
+            "<th style='border: 1px solid #ddd; padding: 8px; color: red;'>Activity</th>"
+            "<th style='border: 1px solid #ddd; padding: 8px; color: red;'>Date</th>"
+            "<th style='border: 1px solid #ddd; padding: 8px; color: red;'>Amount</th>"
+            "<th style='border: 1px solid #ddd; padding: 8px;'>Actions</th></tr>",
+            unsafe_allow_html=True
+        )
+
+        # Store selected non-active activities in session state
+        if 'selected_non_active_activities' not in st.session_state:
+            st.session_state['selected_non_active_activities'] = []
+
+        for i, activity in enumerate(non_active_activities):
+            # Use a unique key for each checkbox
+            checked = activity[0] in st.session_state['selected_non_active_activities']
+            st.markdown(
+                f"<tr>"
+                f"<td style='border: 1px solid #ddd; padding: 8px;'><input type='checkbox' {'checked' if checked else ''} onclick=\"st.session_state['checkbox_non_active_{activity[0]}'] = !st.session_state.get('checkbox_non_active_{activity[0]}', false); st.rerun()\"></td>"
+                f"<td style='border: 1px solid #ddd; padding: 8px; color: red;'>{activity[2]}</td>"
+                f"<td style='border: 1px solid #ddd; padding: 8px; color: red;'>{activity[3]}</td>"
+                f"<td style='border: 1px solid #ddd; padding: 8px; color: red;'>{activity[4] if activity[4] else 'N/A'}</td>"
+                f"<td style='border: 1px solid #ddd; padding: 8px;'>"
+                f"<button onclick=\"st.session_state.restore_activity_{activity[0]} = true; st.rerun()\">🔄</button> "
+                f"<button onclick=\"st.session_state.permanent_delete_activity_{activity[0]} = true; st.rerun()\">🗑️</button>"
+                f"</td></tr>",
+                unsafe_allow_html=True
+            )
+
+            # Update selected non-active activities based on checkbox state
+            if f"checkbox_non_active_{activity[0]}" in st.session_state:
+                if st.session_state[f"checkbox_non_active_{activity[0]}"]:
+                    if activity[0] not in st.session_state['selected_non_active_activities']:
+                        st.session_state['selected_non_active_activities'].append(activity[0])
+                else:
+                    if activity[0] in st.session_state['selected_non_active_activities']:
+                        st.session_state['selected_non_active_activities'].remove(activity[0])
+
+            # Restore activity
+            if f"restore_activity_{activity[0]}" in st.session_state and st.session_state[f"restore_activity_{activity[0]}"]:
+                with st.form(key=f"restore_activity_form_{activity[0]}"):
+                    st.subheader(f"Restore Activity: {activity[2]}")
+                    st.write("Are you sure you want to restore this activity to Active Projects?")
+                    confirm_restore = st.text_input("Type the activity name to confirm", placeholder=activity[2])
+                    restore_submit = st.form_submit_button("Confirm Restore")
+                    if restore_submit:
+                        if confirm_restore == activity[2]:
+                            c.execute("UPDATE activities SET is_active = 1 WHERE id = ?", (activity[0],))
+                            conn.commit()
+                            st.success("Activity restored to Active Projects!")
+                            st.session_state[f"restore_activity_{activity[0]}"] = False
+                            st.rerun()
+                        else:
+                            st.error("Activity name does not match. Action cancelled.")
+
+            # Permanently delete activity
+            if f"permanent_delete_activity_{activity[0]}" in st.session_state and st.session_state[f"permanent_delete_activity_{activity[0]}"]:
+                with st.form(key=f"permanent_delete_activity_form_{activity[0]}"):
+                    st.subheader(f"Permanently Delete Activity: {activity[2]}")
+                    st.write("Are you sure you want to permanently delete this activity? This action cannot be undone.")
+                    confirm_permanent_delete = st.text_input("Type the activity name to confirm", placeholder=activity[2])
+                    permanent_delete_submit = st.form_submit_button("Confirm Permanent Delete")
+                    if permanent_delete_submit:
+                        if confirm_permanent_delete == activity[2]:
                             c.execute("DELETE FROM activities WHERE id = ?", (activity[0],))
                             conn.commit()
-                            st.success("Activity deleted successfully!")
-                            st.session_state[f"delete_activity_{activity[0]}"] = False
+                            st.success("Activity permanently deleted!")
+                            st.session_state[f"permanent_delete_activity_{activity[0]}"] = False
                             st.rerun()
                         else:
                             st.error("Activity name does not match. Deletion cancelled.")
 
         st.markdown("</table>", unsafe_allow_html=True)
 
-        # Delete selected activities
-        if st.button("Delete Selected Activities"):
-            if st.session_state['selected_activities']:
-                confirm = st.button("Confirm Delete? This will remove selected activities!")
+        # Restore selected non-active activities
+        if st.button("Restore Selected to Active"):
+            if st.session_state['selected_non_active_activities']:
+                confirm = st.button("Confirm Restore? This will move selected activities to Active Projects!")
                 if confirm:
-                    for activity_id in st.session_state['selected_activities']:
-                        c.execute("DELETE FROM activities WHERE id = ?", (activity_id,))
+                    for activity_id in st.session_state['selected_non_active_activities']:
+                        c.execute("UPDATE activities SET is_active = 1 WHERE id = ?", (activity_id,))
                     conn.commit()
-                    st.session_state['selected_activities'] = []  # Clear selection
-                    st.success(f"Deleted {len(st.session_state['selected_activities'])} activities!")
+                    st.session_state['selected_non_active_activities'] = []  # Clear selection
+                    st.success(f"Restored {len(st.session_state['selected_non_active_activities'])} activities to Active Projects!")
                     st.rerun()
             else:
-                st.error("No activities selected for deletion.")
+                st.error("No activities selected to restore.")
+
+        # Permanently delete selected non-active activities
+        if st.button("Permanently Delete Selected"):
+            if st.session_state['selected_non_active_activities']:
+                confirm = st.button("Confirm Permanent Delete? This will permanently remove selected activities!")
+                if confirm:
+                    for activity_id in st.session_state['selected_non_active_activities']:
+                        c.execute("DELETE FROM activities WHERE id = ?", (activity_id,))
+                    conn.commit()
+                    st.session_state['selected_non_active_activities'] = []  # Clear selection
+                    st.success(f"Permanently deleted {len(st.session_state['selected_non_active_activities'])} activities!")
+                    st.rerun()
+            else:
+                st.error("No activities selected for permanent deletion.")
 
     # Checklist tab
     with st.session_state['tabs'][2]:
