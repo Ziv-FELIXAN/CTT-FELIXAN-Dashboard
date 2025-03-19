@@ -1,7 +1,8 @@
 import streamlit as st
+from datetime import datetime
 
 def display_members_private():
-    # Initialize session state for members, activities, checklist, contracts, and assets
+    # Initialize session state for members, activities, checklist, contracts, assets, and log
     if 'members' not in st.session_state:
         st.session_state['members'] = [{
             'id': 1,
@@ -11,7 +12,9 @@ def display_members_private():
             'status': 'Active',
             'verification': 'Complete',
             'security': 'High',
-            'premium': 'Yes'
+            'premium': 'Yes',
+            'email': 'john.doe@example.com',  # Added for notifications
+            'phone': '+1234567890'  # Added for notifications
         }]
 
     if 'activities' not in st.session_state:
@@ -38,6 +41,15 @@ def display_members_private():
             {'id': 1, 'user_id': 1, 'asset_id': 'Asset #456', 'description': 'Car', 'value': '$20,000'}
         ]
 
+    if 'action_log' not in st.session_state:
+        st.session_state['action_log'] = []
+
+    if 'action_counter' not in st.session_state:
+        st.session_state['action_counter'] = 0
+
+    if 'notify_user' not in st.session_state:
+        st.session_state['notify_user'] = False  # Default: no notifications
+
     # Get user and filter activities
     user = st.session_state['members'][0]
     user_id = user['id']
@@ -46,6 +58,20 @@ def display_members_private():
     checklist_items = [item for item in st.session_state['checklist'] if item['user_id'] == user_id]
     contracts = [contract for contract in st.session_state['contracts'] if contract['user_id'] == user_id]
     assets = [asset for asset in st.session_state['assets'] if asset['user_id'] == user_id]
+
+    # Function to log actions
+    def log_action(action_type, object_id, details):
+        st.session_state['action_counter'] += 1
+        action_id = st.session_state['action_counter']
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        log_entry = {
+            'action_id': action_id,
+            'action_type': action_type,
+            'object_id': object_id,
+            'details': details,
+            'timestamp': timestamp
+        }
+        st.session_state['action_log'].insert(0, log_entry)  # Add to the top of the log
 
     # Overview tab
     with st.session_state['tabs'][0]:
@@ -98,14 +124,16 @@ def display_members_private():
             if submit_button:
                 if activity_type and activity_date:
                     new_id = max([activity['id'] for activity in st.session_state['activities']], default=0) + 1
-                    st.session_state['activities'].append({
+                    new_activity = {
                         'id': new_id,
                         'user_id': user_id,
                         'activity': activity_type,
                         'date': activity_date,
                         'amount': activity_amount if activity_amount else None,
                         'is_active': True
-                    })
+                    }
+                    st.session_state['activities'].append(new_activity)
+                    log_action("Add Activity", new_id, f"Added activity: {activity_type}")
                     st.success("Activity added successfully!")
                     st.rerun()
                 else:
@@ -178,6 +206,7 @@ def display_members_private():
                                 act['date'] = new_activity_date
                                 act['amount'] = new_activity_amount if new_activity_amount else None
                                 break
+                        log_action("Edit Activity", activity['id'], f"Edited activity: {activity['activity']} to {new_activity_type}")
                         st.success("Activity updated successfully!")
                         st.session_state[f"edit_activity_{activity['id']}"] = False
                         st.rerun()
@@ -195,6 +224,7 @@ def display_members_private():
                                 if act['id'] == activity['id']:
                                     act['is_active'] = False
                                     break
+                            log_action("Move to Non-Active", activity['id'], f"Moved activity to Non-Active: {activity['activity']}")
                             st.success("Activity moved to Non-Active Projects!")
                             st.session_state[f"delete_activity_{activity['id']}"] = False
                             st.rerun()
@@ -267,6 +297,7 @@ def display_members_private():
                                 if act['id'] == activity['id']:
                                     act['is_active'] = True
                                     break
+                            log_action("Restore Activity", activity['id'], f"Restored activity to Active: {activity['activity']}")
                             st.success("Activity restored to Active Projects!")
                             st.session_state[f"restore_activity_{activity['id']}"] = False
                             st.rerun()
@@ -283,6 +314,7 @@ def display_members_private():
                     if permanent_delete_submit:
                         if confirm_permanent_delete == activity['activity']:
                             st.session_state['activities'] = [act for act in st.session_state['activities'] if act['id'] != activity['id']]
+                            log_action("Delete Activity", activity['id'], f"Permanently deleted activity: {activity['activity']}")
                             st.success("Activity permanently deleted!")
                             st.session_state[f"permanent_delete_activity_{activity['id']}"] = False
                             st.rerun()
@@ -308,6 +340,7 @@ def display_members_private():
                     if chk['id'] == item['id']:
                         chk['completed'] = checked
                         break
+                log_action("Update Checklist", item['id'], f"Updated checklist item: {item['step']} to {'Completed' if checked else 'Not Completed'}")
                 st.rerun()
 
         st.markdown(
@@ -348,5 +381,52 @@ def display_members_private():
                 )
         else:
             st.markdown("<p>No assets found.</p>", unsafe_allow_html=True)
+
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    # Log tab
+    with st.session_state['tabs'][4]:
+        st.markdown(
+            "<div class='module-content'>"
+            "<h3>Activity Log</h3>",
+            unsafe_allow_html=True
+        )
+
+        # Option to enable/disable notifications
+        st.subheader("Notification Settings")
+        notify_user = st.checkbox("Send notifications to email/phone for each action", value=st.session_state['notify_user'])
+        if notify_user != st.session_state['notify_user']:
+            st.session_state['notify_user'] = notify_user
+            st.success("Notification settings updated!")
+
+        # Display log table
+        st.subheader("Log Entries")
+        if st.session_state['action_log']:
+            col1, col2, col3, col4, col5 = st.columns([1, 1, 2, 2, 2])
+            with col1:
+                st.markdown("**Action ID**")
+            with col2:
+                st.markdown("**Action Type**")
+            with col3:
+                st.markdown("**Object ID**")
+            with col4:
+                st.markdown("**Details**")
+            with col5:
+                st.markdown("**Timestamp**")
+
+            for entry in st.session_state['action_log']:
+                col1, col2, col3, col4, col5 = st.columns([1, 1, 2, 2, 2])
+                with col1:
+                    st.write(entry['action_id'])
+                with col2:
+                    st.write(entry['action_type'])
+                with col3:
+                    st.write(entry['object_id'])
+                with col4:
+                    st.write(entry['details'])
+                with col5:
+                    st.write(entry['timestamp'])
+        else:
+            st.write("No activities logged yet.")
 
         st.markdown("</div>", unsafe_allow_html=True)
