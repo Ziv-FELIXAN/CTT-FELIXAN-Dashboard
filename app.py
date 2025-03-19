@@ -1,5 +1,8 @@
 import streamlit as st
 
+# Set page layout to wide
+st.set_page_config(layout="wide")
+
 # Initialize session state for interface
 if 'interface_type' not in st.session_state:
     st.session_state['interface_type'] = 'Management'
