@@ -37,31 +37,20 @@ data_c = data_conn.cursor()
 data_c.execute('''CREATE TABLE IF NOT EXISTS members (id INTEGER PRIMARY KEY AUTOINCREMENT, user_type TEXT, name TEXT, status TEXT)''')
 data_conn.commit()
 
-# Header
-header_color = st.session_state['users'][st.session_state['interface_type']]['color']
-st.markdown(
-    f"<div class='header' style='background-color: {header_color}; padding: 10px; text-align: center; position: relative;'>"
-    "<h1 style='color: white;'><i class='fas fa-house'></i> CTT/FELIXAN System Ver3 - {}</h1>"
-    "<div style='position: absolute; top: 10px; right: 10px;'>"
-    "<button style='background: none; border: none; color: white; font-size: 20px; cursor: pointer;' onclick='alert(\"Preferences not implemented yet.\")'>⚙️</button>"
-    "&nbsp;"
-    "<button style='background: none; border: none; color: white; font-size: 20px; cursor: pointer;' onclick='alert(\"User Management not implemented yet.\")'>👤</button>"
-    "</div>"
-    "</div>".format(st.session_state['interface_type']),
-    unsafe_allow_html=True
+# Load HTML content
+with open("static/index.html", "r") as f:
+    html_content = f.read()
+
+# Inject dynamic content into HTML
+html_content = html_content.replace(
+    "CTT/FELIXAN System Ver3",
+    f"CTT/FELIXAN System Ver3 - {st.session_state['interface_type']}"
 )
 
-# Spacer
-st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
+# Render HTML
+st.markdown(html_content, unsafe_allow_html=True)
 
-# Navigation buttons
-st.markdown(
-    "<style>"
-    ".nav-buttons {display: flex; justify-content: flex-start; gap: 5px;}"
-    ".nav-buttons .stButton {margin-right: 5px;}"
-    "</style>",
-    unsafe_allow_html=True
-)
+# Navigation buttons (ensure they match HTML IDs)
 nav_container = st.container()
 with nav_container:
     col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
@@ -86,13 +75,6 @@ with nav_container:
             st.write(f"Selected: {about_option} (Content to be added later)")
 
 # Module navigation
-st.markdown(
-    "<style>"
-    ".module-nav {display: flex; justify-content: flex-start; gap: 5px; margin-top: 10px;}"
-    ".module-nav .stButton {margin-right: 5px;}"
-    "</style>",
-    unsafe_allow_html=True
-)
 module_container = st.container()
 with module_container:
     st.write("Modules:")
@@ -139,14 +121,6 @@ with selected_tab[3]:
         "</div>",
         unsafe_allow_html=True
     )
-
-# Footer
-st.markdown(
-    f"<div style='background-color: #f1f1f1; padding: 10px; text-align: center;'>"
-    f"<p>System Status: Online | Version: {current_version} | Date: 18/03/2025 | © System copyright Ziv Rotem-Bar 2025</p>"
-    "</div>",
-    unsafe_allow_html=True
-)
 
 # Version management section (below footer)
 st.write("Version Management (Admin Only):")
