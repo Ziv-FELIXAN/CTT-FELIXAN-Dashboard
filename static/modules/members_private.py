@@ -23,9 +23,20 @@ def display_members_private():
         activity TEXT,
         date TEXT,
         amount TEXT,
-        is_active BOOLEAN DEFAULT 1,
         FOREIGN KEY (user_id) REFERENCES members(id)
     )''')
+    # Add is_active column if it doesn't exist
+    try:
+        c.execute("ALTER TABLE activities ADD COLUMN is_active BOOLEAN DEFAULT 1")
+        conn.commit()
+    except sqlite3.OperationalError:
+        # Column already exists, no need to add it
+        pass
+
+    # Set is_active to 1 for all existing activities
+    c.execute("UPDATE activities SET is_active = 1 WHERE is_active IS NULL")
+    conn.commit()
+
     c.execute('''CREATE TABLE IF NOT EXISTS checklist (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER,
