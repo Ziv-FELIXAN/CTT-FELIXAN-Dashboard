@@ -5,25 +5,11 @@ from datetime import datetime
 import sys
 import os
 
-# Debug: Print the current working directory and sys.path
-st.write("Current working directory:", os.getcwd())
-st.write("sys.path:", sys.path)
-
 # Add the 'modules' directory to the Python path
-modules_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'modules'))
-st.write("Modules path:", modules_path)
-sys.path.append(modules_path)
-
-# Debug: List files in the modules directory
-st.write("Files in modules directory:", os.listdir(modules_path))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'modules')))
 
 # Import the module
-try:
-    from modules.members_private import display_members_private
-    st.write("Successfully imported display_members_private")
-except Exception as e:
-    st.write("Error importing display_members_private:", str(e))
-    raise
+from modules.members_private import display_members_private
 
 # Set page layout to wide
 st.set_page_config(layout="wide")
