@@ -1,13 +1,8 @@
 import streamlit as st
-import pandas as pd
 
-# Initialize session state for members
-if 'members' not in st.session_state:
-    st.session_state.members = {
-        "Private": ["Ziv"],
-        "Business": ["ZivCorp"],
-        "Management": ["Admin"]
-    }
+# Initialize session state for interface
+if 'interface_type' not in st.session_state:
+    st.session_state.interface_type = 'management'
 
 # Simulated user data
 users = {
@@ -16,67 +11,41 @@ users = {
     "Management": {"type": "Management", "modules": ["Dashboard", "Members", "Loans Regular", "Carat Letter of Credit", "Assets", "Contracts", "Carat", "Triple C", "Insurance", "Transactions Audit", "Secure Transport", "Bids", "Exchange", "System Revenue", "Meeting Room"], "color": "#2C3E50"}
 }
 
-# Dashboard UI
-st.title("CTT/FELIXAN Dashboard")
-user_type = st.selectbox("Select User Type", ["Private", "Business", "Management"])
-user = users[user_type]
+# Header
+st.markdown(f"""
+<div style='background-color: {users[st.session_state.interface_type]['color']}; padding: 10px; text-align: center;'>
+    <h1 style='color: white;'>CTT/FELIXAN System Ver3</h1>
+</div>
+""", unsafe_allow_html=True)
 
-# Header with dynamic color
-st.markdown(f"<h2 style='color: {user['color']};'>Welcome, {user_type} User</h2>", unsafe_allow_html=True)
-
-# Display modules in a table
-st.write("Available Modules:")
-df = pd.DataFrame({"Module": user["modules"], "Status": ["Active"] * len(user["modules"])})
-st.table(df)
-
-# Members section with management table and controls
-st.write("Members List:")
-members_list = st.session_state.members[user_type]
-selected_members = []
-for i, member in enumerate(members_list):
-    col1, col2, col3 = st.columns([1, 3, 2])
-    with col1:
-        checked = st.checkbox("", key=f"checkbox_{i}")
-    with col2:
-        st.write(member)
-    with col3:
-        if st.button("✏️", key=f"edit_{i}"):  # Edit icon
-            st.session_state.editing_member = member
-            st.rerun()
-        if st.button("🗑️", key=f"delete_{i}"):  # Delete icon
-            st.session_state.deleting_member = member
-            st.rerun()
-        if st.button("➕", key=f"add_{i}"):  # Add icon (placeholder)
-            st.session_state.adding_member = True
-            st.rerun()
-    if checked:
-        selected_members.append(member)
-if selected_members and st.button("Delete Selected"):
-    confirm = st.text_input("Confirm deletion by typing the member name")
-    if st.button("Confirm Delete"):
-        if confirm in selected_members and confirm in st.session_state.members[user_type]:
-            st.session_state.members[user_type].remove(confirm)
-            st.success(f"Deleted {confirm} from {user_type} members!")
-            st.rerun()
-if 'deleting_member' in st.session_state:
-    if st.button(f"Confirm delete {st.session_state.deleting_member}?"):
-        if st.session_state.deleting_member in st.session_state.members[user_type]:
-            st.session_state.members[user_type].remove(st.session_state.deleting_member)
-            st.success(f"Deleted {st.session_state.deleting_member} from {user_type} members!")
-            del st.session_state.deleting_member
-            st.rerun()
-
-# Add/Edit member
-new_member = st.text_input("Add/Edit Member Name")
-if st.button("Add Member"):
-    if new_member and new_member not in st.session_state.members[user_type]:
-        st.session_state.members[user_type].append(new_member)
-        st.success(f"Added {new_member} to {user_type} members!")
+# Navigation buttons
+col1, col2, col3 = st.columns(3)
+with col1:
+    if st.button("FELIXAN Management"):
+        st.session_state.interface_type = "Management"
+        st.rerun()
+with col2:
+    if st.button("Private Individuals"):
+        st.session_state.interface_type = "Private"
+        st.rerun()
+with col3:
+    if st.button("Business"):
+        st.session_state.interface_type = "Business"
         st.rerun()
 
-# Footer with system info
-st.write(f"System Status: Online | Version: VER3 | Date: 18/03/2025 | © System copyright Ziv Rotem-Bar 2025")
+# Module navigation
+st.write("Modules:")
+modules = users[st.session_state.interface_type]["modules"]
+module_cols = st.columns(len(modules))
+for i, module in enumerate(modules):
+    with module_cols[i]:
+        st.button(module, key=f"module_{i}")
 
-# Refresh functionality
-if st.button("Refresh Dashboard"):
-    st.rerun()
+# Main content area
+st.write("Main Content Area:")
+st.write("Select a module to view content.")
+
+# Footer
+st.markdown("""
+<div style='background-color: #f1f1f1; padding: 10px; text-align: center;'>
+    <p>System Status: Online | Version: VER
