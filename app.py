@@ -4,20 +4,26 @@ import json
 from datetime import datetime
 import sys
 import os
-import importlib.util
+
+# Debug: Print the current working directory and sys.path
+st.write("Current working directory:", os.getcwd())
+st.write("sys.path:", sys.path)
 
 # Add the 'modules' directory to the Python path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'modules')))
+modules_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'modules'))
+st.write("Modules path:", modules_path)
+sys.path.append(modules_path)
 
-# Dynamically import the module
-module_path = os.path.join(os.path.dirname(__file__), 'modules', 'members_private.py')
-spec = importlib.util.spec_from_file_location("members_private", module_path)
-if spec is None:
-    raise ImportError("Cannot find module members_private")
-module = importlib.util.module_from_spec(spec)
-sys.modules["members_private"] = module
-spec.loader.exec_module(module)
-display_members_private = module.display_members_private
+# Debug: List files in the modules directory
+st.write("Files in modules directory:", os.listdir(modules_path))
+
+# Import the module
+try:
+    from modules.members_private import display_members_private
+    st.write("Successfully imported display_members_private")
+except Exception as e:
+    st.write("Error importing display_members_private:", str(e))
+    raise
 
 # Set page layout to wide
 st.set_page_config(layout="wide")
