@@ -1,11 +1,6 @@
 import streamlit as st
-import sqlite3
 
-def display_members_private():
-    # Connect to the database
-    conn = sqlite3.connect('data.db', check_same_thread=False)
-    c = conn.cursor()
-
+def display_members_private(conn, c):
     # Ensure tables exist
     c.execute('''CREATE TABLE IF NOT EXISTS members (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -148,6 +143,3 @@ def display_members_private():
             "</div>",
             unsafe_allow_html=True
         )
-
-    # Close the database connection
-    conn.close()
