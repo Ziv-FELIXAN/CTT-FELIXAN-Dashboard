@@ -15,6 +15,8 @@ if 'users' not in st.session_state:
         "Business": {"type": "Business", "modules": ["Dashboard", "Members", "Loans Regular", "Carat Letter of Credit", "Assets", "Contracts", "Carat", "Triple C", "Secure Transport", "Bids", "Exchange", "Meeting Room"], "color": "#F39C12"},
         "Management": {"type": "Management", "modules": ["Dashboard", "Members", "Loans Regular", "Carat Letter of Credit", "Assets", "Contracts", "Carat", "Triple C", "Insurance", "Transactions Audit", "Secure Transport", "Bids", "Exchange", "System Revenue", "Meeting Room"], "color": "#2C3E50"}
     }
+if 'selected_module' not in st.session_state:
+    st.session_state['selected_module'] = 'Dashboard'
 
 # Version management with SQLite
 conn = sqlite3.connect('versions.db', check_same_thread=False)
@@ -49,14 +51,17 @@ col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
 with col1:
     if st.button("FELIXAN Management"):
         st.session_state['interface_type'] = "Management"
+        st.session_state['selected_module'] = "Dashboard"
         st.rerun()
 with col2:
     if st.button("Private Individuals"):
         st.session_state['interface_type'] = "Private"
+        st.session_state['selected_module'] = "Dashboard"
         st.rerun()
 with col3:
     if st.button("Business"):
         st.session_state['interface_type'] = "Business"
+        st.session_state['selected_module'] = "Dashboard"
         st.rerun()
 with col4:
     about_option = st.selectbox("About", ["Select", "System Info", "Help"], key="about_dropdown")
@@ -69,11 +74,26 @@ modules = st.session_state['users'][st.session_state['interface_type']]["modules
 module_cols = st.columns(len(modules))
 for i, module in enumerate(modules):
     with module_cols[i]:
-        st.button(module, key=f"module_{i}")
+        if st.button(module, key=f"module_{i}"):
+            st.session_state['selected_module'] = module
+            st.rerun()
 
-# Main content area
+# Main content area with tabs
 st.write("Main Content Area:")
-st.write("Select a module to view content.")
+tabs = ["Overview", "Manage Objects", "Checklist", "Related Assets"]
+selected_tab = st.tabs(tabs)
+with selected_tab[0]:
+    st.write(f"{st.session_state['selected_module']} Overview")
+    st.write("Content for Overview tab (to be implemented).")
+with selected_tab[1]:
+    st.write(f"Manage {st.session_state['selected_module']} Objects")
+    st.write("Content for Manage Objects tab (to be implemented).")
+with selected_tab[2]:
+    st.write(f"{st.session_state['selected_module']} Checklist")
+    st.write("Content for Checklist tab (to be implemented).")
+with selected_tab[3]:
+    st.write(f"Related Assets for {st.session_state['selected_module']}")
+    st.write("Content for Related Assets tab (to be implemented).")
 
 # Footer
 st.markdown(
@@ -83,7 +103,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Version management section (moved below footer)
+# Version management section (below footer)
 st.write("Version Management (Admin Only):")
 c.execute("SELECT version, timestamp FROM versions ORDER BY timestamp DESC")
 versions = c.fetchall()
