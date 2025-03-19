@@ -1,0 +1,65 @@
+.header {
+    background-color: #2C3E50;
+    padding: 10px;
+    text-align: center;
+    position: relative;
+}
+.header h1 {
+    color: white;
+    margin: 0;
+}
+.nav-buttons {
+    display: flex;
+    justify-content: flex-start;
+    gap: 5px;
+    margin-top: 20px;
+}
+.nav-buttons button {
+    margin-right: 5px;
+    padding: 8px 16px;
+    background-color: #f1f1f1;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.nav-buttons button:hover {
+    background-color: #e0e0e0;
+}
+.module-nav {
+    display: flex;
+    justify-content: flex-start;
+    gap: 5px;
+    margin-top: 10px;
+}
+.module-nav button {
+    margin-right: 5px;
+    padding: 8px 16px;
+    background-color: #f1f1f1;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.module-nav button:hover {
+    background-color: #e0e0e0;
+}
+.module-container {
+    border: 1px solid #e6e6e6;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+.footer {
+    background-color: #f1f1f1;
+    padding: 10px;
+    text-align: center;
+    margin-top: 20px;
+}
+.management-active {
+    background-color: #2C3E50;
+}
+.private-active {
+    background-color: #4CAF50;
+}
+.business-active {
+    background-color: #F39C12;
+}
