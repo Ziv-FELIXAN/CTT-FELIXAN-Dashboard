@@ -1,4 +1,7 @@
 import streamlit as st
+import sqlite3
+import json
+from datetime import datetime
 
 # Set page layout to wide
 st.set_page_config(layout="wide")
@@ -13,6 +16,20 @@ users = {
     "Business": {"type": "Business", "modules": ["Dashboard", "Members", "Loans Regular", "Carat Letter of Credit", "Assets", "Contracts", "Carat", "Triple C", "Secure Transport", "Bids", "Exchange", "Meeting Room"], "color": "#F39C12"},
     "Management": {"type": "Management", "modules": ["Dashboard", "Members", "Loans Regular", "Carat Letter of Credit", "Assets", "Contracts", "Carat", "Triple C", "Insurance", "Transactions Audit", "Secure Transport", "Bids", "Exchange", "System Revenue", "Meeting Room"], "color": "#2C3E50"}
 }
+
+# Version management with SQLite
+conn = sqlite3.connect('versions.db', check_same_thread=False)
+c = conn.cursor()
+c.execute('''CREATE TABLE IF NOT EXISTS versions (version TEXT PRIMARY KEY, data TEXT, timestamp TEXT)''')
+conn.commit()
+
+# Save current version
+current_version = "VER3"
+current_data = json.dumps(users)
+c.execute("INSERT OR REPLACE INTO versions (version, data, timestamp) VALUES (?, ?, ?)",
+          (current_version, current_data, datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+conn.commit()
+conn.close()
 
 # Header
 header_color = users[st.session_state['interface_type']]['color']
@@ -56,8 +73,8 @@ st.write("Select a module to view content.")
 
 # Footer
 st.markdown(
-    "<div style='background-color: #f1f1f1; padding: 10px; text-align: center;'>"
-    "<p>System Status: Online | Version: VER3 | Date: 18/03/2025 | © System copyright Ziv Rotem-Bar 2025</p>"
+    f"<div style='background-color: #f1f1f1; padding: 10px; text-align: center;'>"
+    f"<p>System Status: Online | Version: {current_version} | Date: 18/03/2025 | © System copyright Ziv Rotem-Bar 2025</p>"
     "</div>",
     unsafe_allow_html=True
 )
