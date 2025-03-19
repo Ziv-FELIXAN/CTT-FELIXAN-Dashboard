@@ -114,13 +114,11 @@ def display_members_private():
         # Display active activities table
         st.subheader("Active Activities")
         st.markdown(
-            "<table style='width: 100%; border-collapse: collapse;'>"
-            "<tr style='background-color: #f1f1f1;'>"
-            "<th style='border: 1px solid #ddd; padding: 8px;'>Select</th>"
-            "<th style='border: 1px solid #ddd; padding: 8px;'>Activity</th>"
-            "<th style='border: 1px solid #ddd; padding: 8px;'>Date</th>"
-            "<th style='border: 1px solid #ddd; padding: 8px;'>Amount</th>"
-            "<th style='border: 1px solid #ddd; padding: 8px;'>Actions</th></tr>",
+            "<style>"
+            ".activity-table {width: 100%; border-collapse: collapse; margin-top: 10px;}"
+            ".activity-table th, .activity-table td {border: 1px solid #ddd; padding: 8px; text-align: left;}"
+            ".activity-table th {background-color: #f1f1f1;}"
+            "</style>",
             unsafe_allow_html=True
         )
 
@@ -128,23 +126,38 @@ def display_members_private():
         if 'selected_activities' not in st.session_state:
             st.session_state['selected_activities'] = []
 
+        # Create table header
+        st.markdown(
+            "<table class='activity-table'>"
+            "<tr>"
+            "<th>Select</th>"
+            "<th>Activity</th>"
+            "<th>Date</th>"
+            "<th>Amount</th>"
+            "<th>Actions</th>"
+            "</tr>",
+            unsafe_allow_html=True
+        )
+
         for i, activity in enumerate(activities):
-            # Use a unique key for each checkbox
-            checked = st.checkbox("", value=activity['id'] in st.session_state['selected_activities'], key=f"active_checkbox_{activity['id']}")
-            if checked:
-                if activity['id'] not in st.session_state['selected_activities']:
-                    st.session_state['selected_activities'].append(activity['id'])
-            else:
-                if activity['id'] in st.session_state['selected_activities']:
-                    st.session_state['selected_activities'].remove(activity['id'])
+            # Create a row with columns
+            col1, col2, col3, col4, col5 = st.columns([1, 3, 2, 2, 2])
+            with col1:
+                checked = st.checkbox("", value=activity['id'] in st.session_state['selected_activities'], key=f"active_checkbox_{activity['id']}")
+                if checked:
+                    if activity['id'] not in st.session_state['selected_activities']:
+                        st.session_state['selected_activities'].append(activity['id'])
+                else:
+                    if activity['id'] in st.session_state['selected_activities']:
+                        st.session_state['selected_activities'].remove(activity['id'])
 
             st.markdown(
                 f"<tr>"
-                f"<td style='border: 1px solid #ddd; padding: 8px;'>{'' if not checked else '✔'}</td>"
-                f"<td style='border: 1px solid #ddd; padding: 8px;'>{activity['activity']}</td>"
-                f"<td style='border: 1px solid #ddd; padding: 8px;'>{activity['date']}</td>"
-                f"<td style='border: 1px solid #ddd; padding: 8px;'>{activity['amount'] if activity['amount'] else 'N/A'}</td>"
-                f"<td style='border: 1px solid #ddd; padding: 8px;'>"
+                f"<td>{'' if not checked else '✔'}</td>"
+                f"<td>{activity['activity']}</td>"
+                f"<td>{activity['date']}</td>"
+                f"<td>{activity['amount'] if activity['amount'] else 'N/A'}</td>"
+                f"<td>"
                 f"<button onclick=\"st.session_state.edit_activity_{activity['id']} = true; st.rerun()\">✏️</button> "
                 f"<button onclick=\"st.session_state.delete_activity_{activity['id']} = true; st.rerun()\">🗑️</button>"
                 f"</td></tr>",
