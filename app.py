@@ -6,16 +6,15 @@ from datetime import datetime
 # Set page layout to wide
 st.set_page_config(layout="wide")
 
-# Initialize session state for interface
+# Initialize session state for interface and users
 if 'interface_type' not in st.session_state:
     st.session_state['interface_type'] = 'Management'
-
-# Simulated user data
-users = {
-    "Private": {"type": "Private", "modules": ["Dashboard", "Members", "Loans Regular", "Assets", "Contracts", "Carat", "Triple C"], "color": "#4CAF50"},
-    "Business": {"type": "Business", "modules": ["Dashboard", "Members", "Loans Regular", "Carat Letter of Credit", "Assets", "Contracts", "Carat", "Triple C", "Secure Transport", "Bids", "Exchange", "Meeting Room"], "color": "#F39C12"},
-    "Management": {"type": "Management", "modules": ["Dashboard", "Members", "Loans Regular", "Carat Letter of Credit", "Assets", "Contracts", "Carat", "Triple C", "Insurance", "Transactions Audit", "Secure Transport", "Bids", "Exchange", "System Revenue", "Meeting Room"], "color": "#2C3E50"}
-}
+if 'users' not in st.session_state:
+    st.session_state['users'] = {
+        "Private": {"type": "Private", "modules": ["Dashboard", "Members", "Loans Regular", "Assets", "Contracts", "Carat", "Triple C"], "color": "#4CAF50"},
+        "Business": {"type": "Business", "modules": ["Dashboard", "Members", "Loans Regular", "Carat Letter of Credit", "Assets", "Contracts", "Carat", "Triple C", "Secure Transport", "Bids", "Exchange", "Meeting Room"], "color": "#F39C12"},
+        "Management": {"type": "Management", "modules": ["Dashboard", "Members", "Loans Regular", "Carat Letter of Credit", "Assets", "Contracts", "Carat", "Triple C", "Insurance", "Transactions Audit", "Secure Transport", "Bids", "Exchange", "System Revenue", "Meeting Room"], "color": "#2C3E50"}
+    }
 
 # Version management with SQLite
 conn = sqlite3.connect('versions.db', check_same_thread=False)
@@ -25,13 +24,13 @@ conn.commit()
 
 # Save current version
 current_version = "VER3"
-current_data = json.dumps(users)
+current_data = json.dumps(st.session_state['users'])
 c.execute("INSERT OR REPLACE INTO versions (version, data, timestamp) VALUES (?, ?, ?)",
           (current_version, current_data, datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
 conn.commit()
 
 # Header
-header_color = users[st.session_state['interface_type']]['color']
+header_color = st.session_state['users'][st.session_state['interface_type']]['color']
 st.markdown(
     f"<div style='background-color: {header_color}; padding: 10px; text-align: center;'>"
     "<h1 style='color: white;'>CTT/FELIXAN System Ver3</h1>"
@@ -60,7 +59,7 @@ with col4:
 
 # Module navigation
 st.write("Modules:")
-modules = users[st.session_state['interface_type']]["modules"]
+modules = st.session_state['users'][st.session_state['interface_type']]["modules"]
 module_cols = st.columns(len(modules))
 for i, module in enumerate(modules):
     with module_cols[i]:
@@ -83,8 +82,7 @@ if versions:
             c.execute("SELECT data FROM versions WHERE version = ?", (version_to_restore,))
             data = c.fetchone()
             if data:
-                global users
-                users = json.loads(data[0])
+                st.session_state['users'] = json.loads(data[0])
                 st.success(f"Restored version {version_to_restore}!")
                 st.rerun()
 else:
