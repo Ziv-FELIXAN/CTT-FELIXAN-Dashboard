@@ -9,7 +9,10 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'static', 'modules')))
 
 # Import the module directly
-from members_private import display_members_private
+try:
+    from members_private import display_members_private
+except ImportError as e:
+    raise ImportError("Failed to import display_members_private from members_private. Ensure members_private.py exists in static/modules. Error: " + str(e))
 
 # Set page layout to wide
 st.set_page_config(layout="wide")
