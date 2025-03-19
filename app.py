@@ -75,8 +75,16 @@ for i, module in enumerate(modules):
 st.write("Main Content Area:")
 st.write("Select a module to view content.")
 
-# Version management section
-st.write("Version Management:")
+# Footer
+st.markdown(
+    f"<div style='background-color: #f1f1f1; padding: 10px; text-align: center;'>"
+    f"<p>System Status: Online | Version: {current_version} | Date: 18/03/2025 | © System copyright Ziv Rotem-Bar 2025</p>"
+    "</div>",
+    unsafe_allow_html=True
+)
+
+# Version management section (moved below footer)
+st.write("Version Management (Admin Only):")
 c.execute("SELECT version, timestamp FROM versions ORDER BY timestamp DESC")
 versions = c.fetchall()
 if versions:
@@ -93,14 +101,6 @@ if versions:
                 st.rerun()
 else:
     st.write("No versions available to restore.")
-
-# Footer
-st.markdown(
-    f"<div style='background-color: #f1f1f1; padding: 10px; text-align: center;'>"
-    f"<p>System Status: Online | Version: {current_version} | Date: 18/03/2025 | © System copyright Ziv Rotem-Bar 2025</p>"
-    "</div>",
-    unsafe_allow_html=True
-)
 
 conn.close()
 data_conn.close()
