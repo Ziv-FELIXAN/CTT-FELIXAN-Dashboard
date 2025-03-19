@@ -25,15 +25,6 @@ if 'users' not in st.session_state:
     }
 if 'selected_module' not in st.session_state:
     st.session_state['selected_module'] = 'Dashboard'
-if 'members_private' not in st.session_state:
-    st.session_state['members_private'] = [
-        {"name": "John Doe", "join_date": "2024-01-15", "status": "Active", "verification": "Complete", "security": "High", "premium": "Yes"},
-    ]
-if 'activities_private' not in st.session_state:
-    st.session_state['activities_private'] = [
-        {"activity": "Loan Application Submitted", "date": "2025-03-01"},
-        {"activity": "Carat Transaction", "amount": "$50,000", "date": "2025-03-02"}
-    ]
 
 # Version management with SQLite
 conn = sqlite3.connect('versions.db', check_same_thread=False)
@@ -47,12 +38,6 @@ current_data = json.dumps(st.session_state['users'])
 c.execute("INSERT OR REPLACE INTO versions (version, data, timestamp) VALUES (?, ?, ?)",
           (current_version, current_data, datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
 conn.commit()
-
-# Data management with SQLite
-data_conn = sqlite3.connect('data.db', check_same_thread=False)
-data_c = data_conn.cursor()
-data_c.execute('''CREATE TABLE IF NOT EXISTS members (id INTEGER PRIMARY KEY AUTOINCREMENT, user_type TEXT, name TEXT, status TEXT)''')
-data_conn.commit()
 
 # Header with background image and color strip
 header_color = st.session_state['users'][st.session_state['interface_type']]['color']
@@ -132,7 +117,7 @@ st.session_state['tabs'] = st.tabs(["Overview", "Manage Objects", "Checklist", "
 
 # Display module content based on selection
 if st.session_state['selected_module'] == "Members" and st.session_state['interface_type'] == "Private":
-    display_members_private(data_conn, data_c)
+    display_members_private()
 elif st.session_state['selected_module'] == "Dashboard":
     with st.session_state['tabs'][0]:
         st.markdown(
@@ -227,6 +212,5 @@ if versions:
 else:
     st.write("No versions available to restore.")
 
-# Close database connections after all operations
+# Close database connection
 conn.close()
-data_conn.close()
