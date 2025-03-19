@@ -37,10 +37,10 @@ data_c = data_conn.cursor()
 data_c.execute('''CREATE TABLE IF NOT EXISTS members (id INTEGER PRIMARY KEY AUTOINCREMENT, user_type TEXT, name TEXT, status TEXT)''')
 data_conn.commit()
 
-# Header
+# Header with background image
 header_color = st.session_state['users'][st.session_state['interface_type']]['color']
 st.markdown(
-    f"<div style='background-color: {header_color}; padding: 10px; text-align: center; position: relative;'>"
+    f"<div style='background-image: url(\"https://via.placeholder.com/1500x200.jpg?text=Header+Image\"); background-size: cover; background-position: center; padding: 20px; text-align: center; position: relative;'>"
     f"<h1 style='color: white;'><i class='fas fa-house'></i> CTT/FELIXAN System Ver3 - {st.session_state['interface_type']}</h1>"
     "<div style='position: absolute; top: 10px; right: 10px;'>"
     "<button style='background: none; border: none; color: white; font-size: 20px; cursor: pointer;' onclick='alert(\"Preferences not implemented yet.\")'>⚙️</button>"
