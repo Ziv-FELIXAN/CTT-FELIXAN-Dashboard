@@ -55,7 +55,7 @@ tabs = ["Overview", "Manage Objects", "Checklist", "Related Assets"]
 selected_tab = st.tabs(tabs)
 with selected_tab[0]:
     st.markdown(
-        "<div style='border: 1px solid #e6e6e6; padding: 10px; border-radius: 5px;'>"
+        "<div class='module-content'>"
         f"<h3>{st.session_state['selected_module']} Overview</h3>"
         "Content for Overview tab (to be implemented)."
         "</div>",
@@ -63,7 +63,7 @@ with selected_tab[0]:
     )
 with selected_tab[1]:
     st.markdown(
-        "<div style='border: 1px solid #e6e6e6; padding: 10px; border-radius: 5px;'>"
+        "<div class='module-content'>"
         f"<h3>Manage {st.session_state['selected_module']} Objects</h3>"
         "Content for Manage Objects tab (to be implemented)."
         "</div>",
@@ -71,7 +71,7 @@ with selected_tab[1]:
     )
 with selected_tab[2]:
     st.markdown(
-        "<div style='border: 1px solid #e6e6e6; padding: 10px; border-radius: 5px;'>"
+        "<div class='module-content'>"
         f"<h3>{st.session_state['selected_module']} Checklist</h3>"
         "Content for Checklist tab (to be implemented)."
         "</div>",
@@ -79,7 +79,7 @@ with selected_tab[2]:
     )
 with selected_tab[3]:
     st.markdown(
-        "<div style='border: 1px solid #e6e6e6; padding: 10px; border-radius: 5px;'>"
+        "<div class='module-content'>"
         f"<h3>Related Assets for {st.session_state['selected_module']}</h3>"
         "Content for Related Assets tab (to be implemented)."
         "</div>",
