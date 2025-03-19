@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CTT/FELIXAN System Ver3</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header" id="header">
+            <h1><i class="fas fa-house"></i> CTT/FELIXAN System Ver3</h1>
+            <div class="settings">
+                <button onclick="alert('Preferences not implemented yet.')" style="background: none; border: none; color: white; font-size: 20px; cursor: pointer;">⚙️</button>
+                <button onclick="alert('User Management not implemented yet.')" style="background: none; border: none; color: white; font-size: 20px; cursor: pointer;">👤</button>
+            </div>
+        </div>
+        <div class="nav-buttons" id="nav-buttons">
+            <button id="management-btn" onclick="loadInterface('management')">
+                <i class="fas fa-tasks"></i> FELIXAN Management
+            </button>
+            <button id="private-btn" onclick="loadInterface('private')">
+                <i class="fas fa-user"></i> Private Individuals
+            </button>
+            <button id="business-btn" onclick="loadInterface('business')">
+                <i class="fas fa-building"></i> Business
+            </button>
+            <div class="about-dropdown">
+                <select id="about-dropdown" onchange="if(this.value !== 'Select') alert(this.value + ' not implemented yet.');">
+                    <option value="Select">About</option>
+                    <option value="System Info">System Info</option>
+                    <option value="Help">Help</option>
+                </select>
+            </div>
+        </div>
+        <div id="module-nav" class="module-nav">
+            <div id="management-dropdown" class="dropdown-content"></div>
+            <div id="private-dropdown" class="dropdown-content"></div>
+            <div id="business-dropdown" class="dropdown-content"></div>
+        </div>
+        <div id="module-container" class="module-container">
+            <div class="welcome-message">
+                <i class="fas fa-arrow-up fa-2x"></i>
+                <p>Select an interface above to view available modules.</p>
+            </div>
+        </div>
+        <div class="footer">
+            <p><i class="fas fa-info-circle"></i> System Status: Online | Version: VER3 | Date: 18/03/2025 | © System copyright Ziv Rotem-Bar 2025</p>
+        </div>
+        <div class="version-management">
+            <h3>Version Management (Admin Only):</h3>
+            <div id="version-list"></div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/script.js"></script>
+</body>
+</html>
