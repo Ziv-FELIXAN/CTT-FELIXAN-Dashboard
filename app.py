@@ -24,7 +24,7 @@ st.markdown(
 )
 
 # Navigation buttons
-col1, col2, col3 = st.columns(3)
+col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
 with col1:
     if st.button("FELIXAN Management"):
         st.session_state['interface_type'] = "Management"
@@ -37,6 +37,10 @@ with col3:
     if st.button("Business"):
         st.session_state['interface_type'] = "Business"
         st.rerun()
+with col4:
+    about_option = st.selectbox("About", ["Select", "System Info", "Help"], key="about_dropdown")
+    if about_option != "Select":
+        st.write(f"Selected: {about_option} (Content to be added later)")
 
 # Module navigation
 st.write("Modules:")
