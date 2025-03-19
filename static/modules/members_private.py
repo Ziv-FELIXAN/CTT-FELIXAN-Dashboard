@@ -130,10 +130,17 @@ def display_members_private():
 
         for i, activity in enumerate(activities):
             # Use a unique key for each checkbox
-            checked = activity['id'] in st.session_state['selected_activities']
+            checked = st.checkbox("", value=activity['id'] in st.session_state['selected_activities'], key=f"active_checkbox_{activity['id']}")
+            if checked:
+                if activity['id'] not in st.session_state['selected_activities']:
+                    st.session_state['selected_activities'].append(activity['id'])
+            else:
+                if activity['id'] in st.session_state['selected_activities']:
+                    st.session_state['selected_activities'].remove(activity['id'])
+
             st.markdown(
                 f"<tr>"
-                f"<td style='border: 1px solid #ddd; padding: 8px;'><input type='checkbox' {'checked' if checked else ''} onclick=\"st.session_state['checkbox_{activity['id']}'] = !st.session_state.get('checkbox_{activity['id']}', false); st.rerun()\"></td>"
+                f"<td style='border: 1px solid #ddd; padding: 8px;'>{'' if not checked else '✔'}</td>"
                 f"<td style='border: 1px solid #ddd; padding: 8px;'>{activity['activity']}</td>"
                 f"<td style='border: 1px solid #ddd; padding: 8px;'>{activity['date']}</td>"
                 f"<td style='border: 1px solid #ddd; padding: 8px;'>{activity['amount'] if activity['amount'] else 'N/A'}</td>"
@@ -143,15 +150,6 @@ def display_members_private():
                 f"</td></tr>",
                 unsafe_allow_html=True
             )
-
-            # Update selected activities based on checkbox state
-            if f"checkbox_{activity['id']}" in st.session_state:
-                if st.session_state[f"checkbox_{activity['id']}"]:
-                    if activity['id'] not in st.session_state['selected_activities']:
-                        st.session_state['selected_activities'].append(activity['id'])
-                else:
-                    if activity['id'] in st.session_state['selected_activities']:
-                        st.session_state['selected_activities'].remove(activity['id'])
 
             # Edit activity
             if f"edit_activity_{activity['id']}" in st.session_state and st.session_state[f"edit_activity_{activity['id']}"]:
