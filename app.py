@@ -112,8 +112,8 @@ with module_container:
                 st.session_state['selected_module'] = module
                 st.rerun()
 
-# Main content area with tabs
-st.session_state['tabs'] = st.tabs(["Overview", "Manage Objects", "Checklist", "Related Assets"])
+# Main content area with tabs (added "Log" tab)
+st.session_state['tabs'] = st.tabs(["Overview", "Manage Objects", "Checklist", "Related Assets", "Log"])
 
 # Display module content based on selection
 if st.session_state['selected_module'] == "Members" and st.session_state['interface_type'] == "Private":
@@ -151,6 +151,14 @@ elif st.session_state['selected_module'] == "Dashboard":
             "</div>",
             unsafe_allow_html=True
         )
+    with st.session_state['tabs'][4]:
+        st.markdown(
+            "<div class='module-content'>"
+            "<h3>Activity Log</h3>"
+            "<p>No activities logged yet for the Dashboard.</p>"
+            "</div>",
+            unsafe_allow_html=True
+        )
 else:
     with st.session_state['tabs'][0]:
         st.markdown(
@@ -181,6 +189,14 @@ else:
             "<div class='module-content'>"
             f"<h3>Related Assets for {st.session_state['selected_module']}</h3>"
             "Content for Related Assets tab (to be implemented)."
+            "</div>",
+            unsafe_allow_html=True
+        )
+    with st.session_state['tabs'][4]:
+        st.markdown(
+            "<div class='module-content'>"
+            "<h3>Activity Log</h3>"
+            "<p>No activities logged yet for this module.</p>"
             "</div>",
             unsafe_allow_html=True
         )
