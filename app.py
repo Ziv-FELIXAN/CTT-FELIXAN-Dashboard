@@ -227,6 +227,6 @@ if versions:
 else:
     st.write("No versions available to restore.")
 
-# Close database connections
+# Close database connections after all operations
 conn.close()
 data_conn.close()
