@@ -126,21 +126,21 @@ def display_members_private():
         if 'selected_activities' not in st.session_state:
             st.session_state['selected_activities'] = []
 
-        # Create table header
-        st.markdown(
-            "<table class='activity-table'>"
-            "<tr>"
-            "<th>Select</th>"
-            "<th>Activity</th>"
-            "<th>Date</th>"
-            "<th>Amount</th>"
-            "<th>Actions</th>"
-            "</tr>",
-            unsafe_allow_html=True
-        )
+        # Create table header using st.columns
+        col1, col2, col3, col4, col5 = st.columns([1, 3, 2, 2, 2])
+        with col1:
+            st.markdown("**Select**")
+        with col2:
+            st.markdown("**Activity**")
+        with col3:
+            st.markdown("**Date**")
+        with col4:
+            st.markdown("**Amount**")
+        with col5:
+            st.markdown("**Actions**")
 
+        # Display each activity as a row
         for i, activity in enumerate(activities):
-            # Create a row with columns
             col1, col2, col3, col4, col5 = st.columns([1, 3, 2, 2, 2])
             with col1:
                 checked = st.checkbox("", value=activity['id'] in st.session_state['selected_activities'], key=f"active_checkbox_{activity['id']}")
@@ -150,19 +150,17 @@ def display_members_private():
                 else:
                     if activity['id'] in st.session_state['selected_activities']:
                         st.session_state['selected_activities'].remove(activity['id'])
-
-            st.markdown(
-                f"<tr>"
-                f"<td>{'' if not checked else '✔'}</td>"
-                f"<td>{activity['activity']}</td>"
-                f"<td>{activity['date']}</td>"
-                f"<td>{activity['amount'] if activity['amount'] else 'N/A'}</td>"
-                f"<td>"
-                f"<button onclick=\"st.session_state.edit_activity_{activity['id']} = true; st.rerun()\">✏️</button> "
-                f"<button onclick=\"st.session_state.delete_activity_{activity['id']} = true; st.rerun()\">🗑️</button>"
-                f"</td></tr>",
-                unsafe_allow_html=True
-            )
+            with col2:
+                st.write(activity['activity'])
+            with col3:
+                st.write(activity['date'])
+            with col4:
+                st.write(activity['amount'] if activity['amount'] else 'N/A')
+            with col5:
+                if st.button("✏️", key=f"edit_button_{activity['id']}"):
+                    st.session_state[f"edit_activity_{activity['id']}"] = True
+                if st.button("🗑️", key=f"delete_button_{activity['id']}"):
+                    st.session_state[f"delete_activity_{activity['id']}"] = True
 
             # Edit activity
             if f"edit_activity_{activity['id']}" in st.session_state and st.session_state[f"edit_activity_{activity['id']}"]:
@@ -202,8 +200,6 @@ def display_members_private():
                         else:
                             st.error("Activity name does not match. Action cancelled.")
 
-        st.markdown("</table>", unsafe_allow_html=True)
-
         # Delete selected activities (move to non-active)
         if st.button("Move Selected to Non-Active"):
             if st.session_state['selected_activities']:
@@ -223,44 +219,52 @@ def display_members_private():
         # Display non-active activities table
         st.subheader("Non-Active Projects")
         st.markdown(
-            "<table style='width: 100%; border-collapse: collapse;'>"
-            "<tr style='background-color: #f1f1f1;'>"
-            "<th style='border: 1px solid #ddd; padding: 8px;'>Select</th>"
-            "<th style='border: 1px solid #ddd; padding: 8px; color: red;'>Activity</th>"
-            "<th style='border: 1px solid #ddd; padding: 8px; color: red;'>Date</th>"
-            "<th style='border: 1px solid #ddd; padding: 8px; color: red;'>Amount</th>"
-            "<th style='border: 1px solid #ddd; padding: 8px;'>Actions</th></tr>",
+            "<style>"
+            ".activity-table {width: 100%; border-collapse: collapse; margin-top: 10px;}"
+            ".activity-table th, .activity-table td {border: 1px solid #ddd; padding: 8px; text-align: left;}"
+            ".activity-table th {background-color: #f1f1f1;}"
+            "</style>",
             unsafe_allow_html=True
         )
+
+        # Create table header using st.columns
+        col1, col2, col3, col4, col5 = st.columns([1, 3, 2, 2, 2])
+        with col1:
+            st.markdown("**Select**")
+        with col2:
+            st.markdown("**Activity**")
+        with col3:
+            st.markdown("**Date**")
+        with col4:
+            st.markdown("**Amount**")
+        with col5:
+            st.markdown("**Actions**")
 
         # Store selected non-active activities in session state
         if 'selected_non_active_activities' not in st.session_state:
             st.session_state['selected_non_active_activities'] = []
 
         for i, activity in enumerate(non_active_activities):
-            # Use a unique key for each checkbox
-            checked = activity['id'] in st.session_state['selected_non_active_activities']
-            st.markdown(
-                f"<tr>"
-                f"<td style='border: 1px solid #ddd; padding: 8px;'><input type='checkbox' {'checked' if checked else ''} onclick=\"st.session_state['checkbox_non_active_{activity['id']}'] = !st.session_state.get('checkbox_non_active_{activity['id']}', false); st.rerun()\"></td>"
-                f"<td style='border: 1px solid #ddd; padding: 8px; color: red;'>{activity['activity']}</td>"
-                f"<td style='border: 1px solid #ddd; padding: 8px; color: red;'>{activity['date']}</td>"
-                f"<td style='border: 1px solid #ddd; padding: 8px; color: red;'>{activity['amount'] if activity['amount'] else 'N/A'}</td>"
-                f"<td style='border: 1px solid #ddd; padding: 8px;'>"
-                f"<button onclick=\"st.session_state.restore_activity_{activity['id']} = true; st.rerun()\">🔄</button> "
-                f"<button onclick=\"st.session_state.permanent_delete_activity_{activity['id']} = true; st.rerun()\">🗑️</button>"
-                f"</td></tr>",
-                unsafe_allow_html=True
-            )
-
-            # Update selected non-active activities based on checkbox state
-            if f"checkbox_non_active_{activity['id']}" in st.session_state:
-                if st.session_state[f"checkbox_non_active_{activity['id']}"]:
+            col1, col2, col3, col4, col5 = st.columns([1, 3, 2, 2, 2])
+            with col1:
+                checked = st.checkbox("", value=activity['id'] in st.session_state['selected_non_active_activities'], key=f"non_active_checkbox_{activity['id']}")
+                if checked:
                     if activity['id'] not in st.session_state['selected_non_active_activities']:
                         st.session_state['selected_non_active_activities'].append(activity['id'])
                 else:
                     if activity['id'] in st.session_state['selected_non_active_activities']:
                         st.session_state['selected_non_active_activities'].remove(activity['id'])
+            with col2:
+                st.markdown(f"<span style='color: red;'>{activity['activity']}</span>", unsafe_allow_html=True)
+            with col3:
+                st.markdown(f"<span style='color: red;'>{activity['date']}</span>", unsafe_allow_html=True)
+            with col4:
+                st.markdown(f"<span style='color: red;'>{activity['amount'] if activity['amount'] else 'N/A'}</span>", unsafe_allow_html=True)
+            with col5:
+                if st.button("🔄", key=f"restore_button_{activity['id']}"):
+                    st.session_state[f"restore_activity_{activity['id']}"] = True
+                if st.button("🗑️", key=f"permanent_delete_button_{activity['id']}"):
+                    st.session_state[f"permanent_delete_activity_{activity['id']}"] = True
 
             # Restore activity
             if f"restore_activity_{activity['id']}" in st.session_state and st.session_state[f"restore_activity_{activity['id']}"]:
@@ -296,8 +300,6 @@ def display_members_private():
                             st.rerun()
                         else:
                             st.error("Activity name does not match. Deletion cancelled.")
-
-        st.markdown("</table>", unsafe_allow_html=True)
 
         # Restore selected non-active activities
         if st.button("Restore Selected to Active"):
