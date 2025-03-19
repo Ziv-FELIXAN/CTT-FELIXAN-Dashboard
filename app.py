@@ -37,7 +37,7 @@ data_c = data_conn.cursor()
 data_c.execute('''CREATE TABLE IF NOT EXISTS members (id INTEGER PRIMARY KEY AUTOINCREMENT, user_type TEXT, name TEXT, status TEXT)''')
 data_conn.commit()
 
-# Header with background image and color fallback
+# Header with background image
 header_color = st.session_state['users'][st.session_state['interface_type']]['color']
 st.markdown(
     f"<div style='background-image: url(\"https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1500&q=80\"); background-size: cover; background-position: center; background-color: {header_color}; padding: 20px; text-align: center; position: relative;'>"
@@ -58,8 +58,8 @@ st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
 st.markdown(
     "<style>"
     ".nav-buttons {display: flex; justify-content: flex-start; gap: 5px; margin-top: 20px; flex-wrap: wrap; align-items: flex-start;}"
-    ".nav-buttons .stButton {margin-right: 5px;}"
-    ".nav-buttons .stButton>button {padding: 8px 16px; background-color: #f1f1f1; border: none; border-radius: 5px; cursor: pointer; text-align: left;}"
+    ".nav-buttons .stButton {margin-right: 5px; flex: 0 0 auto;}"
+    ".nav-buttons .stButton>button {padding: 8px 16px; background-color: #f1f1f1; border: none; border-radius: 5px; cursor: pointer; text-align: left; width: auto;}"
     ".nav-buttons .stButton>button:hover {background-color: #e0e0e0;}"
     "</style>",
     unsafe_allow_html=True
@@ -91,8 +91,8 @@ with nav_container:
 st.markdown(
     "<style>"
     ".module-nav {display: flex; justify-content: flex-start; gap: 5px; margin-top: 10px; flex-wrap: wrap; align-items: flex-start;}"
-    ".module-nav .stButton {margin-right: 5px;}"
-    ".module-nav .stButton>button {padding: 8px 16px; background-color: #f1f1f1; border: none; border-radius: 5px; cursor: pointer; text-align: left;}"
+    ".module-nav .stButton {margin-right: 5px; flex: 0 0 auto;}"
+    ".module-nav .stButton>button {padding: 8px 16px; background-color: #f1f1f1; border: none; border-radius: 5px; cursor: pointer; text-align: left; width: auto;}"
     ".module-nav .stButton>button:hover {background-color: #e0e0e0;}"
     ".module-content {border: 1px solid #e6e6e6; padding: 10px; border-radius: 5px;}"
     "</style>",
