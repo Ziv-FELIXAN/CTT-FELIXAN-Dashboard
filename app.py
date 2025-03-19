@@ -48,4 +48,6 @@ st.write("Select a module to view content.")
 # Footer
 st.markdown("""
 <div style='background-color: #f1f1f1; padding: 10px; text-align: center;'>
-    <p>System Status: Online | Version: VER
+    <p>System Status: Online | Version: VER3 | Date: 18/03/2025 | © System copyright Ziv Rotem-Bar 2025</p>
+</div>
+""", unsafe_allow_html=True)
