@@ -2,7 +2,7 @@ import streamlit as st
 
 # Initialize session state for interface
 if 'interface_type' not in st.session_state:
-    st.session_state.interface_type = 'management'
+    st.session_state['interface_type'] = 'Management'
 
 # Simulated user data
 users = {
@@ -12,7 +12,7 @@ users = {
 }
 
 # Header
-header_color = users[st.session_state.interface_type]['color']
+header_color = users[st.session_state['interface_type']]['color']
 st.markdown(
     f"<div style='background-color: {header_color}; padding: 10px; text-align: center;'>"
     "<h1 style='color: white;'>CTT/FELIXAN System Ver3</h1>"
@@ -24,20 +24,20 @@ st.markdown(
 col1, col2, col3 = st.columns(3)
 with col1:
     if st.button("FELIXAN Management"):
-        st.session_state.interface_type = "Management"
+        st.session_state['interface_type'] = "Management"
         st.rerun()
 with col2:
     if st.button("Private Individuals"):
-        st.session_state.interface_type = "Private"
+        st.session_state['interface_type'] = "Private"
         st.rerun()
 with col3:
     if st.button("Business"):
-        st.session_state.interface_type = "Business"
+        st.session_state['interface_type'] = "Business"
         st.rerun()
 
 # Module navigation
 st.write("Modules:")
-modules = users[st.session_state.interface_type]["modules"]
+modules = users[st.session_state['interface_type']]["modules"]
 module_cols = st.columns(len(modules))
 for i, module in enumerate(modules):
     with module_cols[i]:
