@@ -2,6 +2,7 @@ import streamlit as st
 import sqlite3
 import json
 from datetime import datetime
+from modules.members_private import display_members_private
 
 # Set page layout to wide
 st.set_page_config(layout="wide")
@@ -17,6 +18,15 @@ if 'users' not in st.session_state:
     }
 if 'selected_module' not in st.session_state:
     st.session_state['selected_module'] = 'Dashboard'
+if 'members_private' not in st.session_state:
+    st.session_state['members_private'] = [
+        {"name": "John Doe", "join_date": "2024-01-15", "status": "Active", "verification": "Complete", "security": "High", "premium": "Yes"},
+    ]
+if 'activities_private' not in st.session_state:
+    st.session_state['activities_private'] = [
+        {"activity": "Loan Application Submitted", "date": "2025-03-01"},
+        {"activity": "Carat Transaction", "amount": "$50,000", "date": "2025-03-02"}
+    ]
 
 # Version management with SQLite
 conn = sqlite3.connect('versions.db', check_same_thread=False)
@@ -111,40 +121,44 @@ with module_container:
                 st.rerun()
 
 # Main content area with tabs
-tabs = ["Overview", "Manage Objects", "Checklist", "Related Assets"]
-selected_tab = st.tabs(tabs)
-with selected_tab[0]:
-    st.markdown(
-        "<div class='module-content'>"
-        f"<h3>{st.session_state['selected_module']} Overview</h3>"
-        "Content for Overview tab (to be implemented)."
-        "</div>",
-        unsafe_allow_html=True
-    )
-with selected_tab[1]:
-    st.markdown(
-        "<div class='module-content'>"
-        f"<h3>Manage {st.session_state['selected_module']} Objects</h3>"
-        "Content for Manage Objects tab (to be implemented)."
-        "</div>",
-        unsafe_allow_html=True
-    )
-with selected_tab[2]:
-    st.markdown(
-        "<div class='module-content'>"
-        f"<h3>{st.session_state['selected_module']} Checklist</h3>"
-        "Content for Checklist tab (to be implemented)."
-        "</div>",
-        unsafe_allow_html=True
-    )
-with selected_tab[3]:
-    st.markdown(
-        "<div class='module-content'>"
-        f"<h3>Related Assets for {st.session_state['selected_module']}</h3>"
-        "Content for Related Assets tab (to be implemented)."
-        "</div>",
-        unsafe_allow_html=True
-    )
+st.session_state['tabs'] = st.tabs(["Overview", "Manage Objects", "Checklist", "Related Assets"])
+
+# Display module content based on selection
+if st.session_state['selected_module'] == "Members" and st.session_state['interface_type'] == "Private":
+    display_members_private()
+else:
+    with st.session_state['tabs'][0]:
+        st.markdown(
+            "<div class='module-content'>"
+            f"<h3>{st.session_state['selected_module']} Overview</h3>"
+            "Content for Overview tab (to be implemented)."
+            "</div>",
+            unsafe_allow_html=True
+        )
+    with st.session_state['tabs'][1]:
+        st.markdown(
+            "<div class='module-content'>"
+            f"<h3>Manage {st.session_state['selected_module']} Objects</h3>"
+            "Content for Manage Objects tab (to be implemented)."
+            "</div>",
+            unsafe_allow_html=True
+        )
+    with st.session_state['tabs'][2]:
+        st.markdown(
+            "<div class='module-content'>"
+            f"<h3>{st.session_state['selected_module']} Checklist</h3>"
+            "Content for Checklist tab (to be implemented)."
+            "</div>",
+            unsafe_allow_html=True
+        )
+    with st.session_state['tabs'][3]:
+        st.markdown(
+            "<div class='module-content'>"
+            f"<h3>Related Assets for {st.session_state['selected_module']}</h3>"
+            "Content for Related Assets tab (to be implemented)."
+            "</div>",
+            unsafe_allow_html=True
+        )
 
 # Footer
 st.markdown(
