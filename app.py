@@ -5,11 +5,11 @@ from datetime import datetime
 import sys
 import os
 
-# Add the 'modules' directory to the Python path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'modules')))
+# Add the 'static/modules' directory to the Python path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'static', 'modules')))
 
 # Import the module
-from modules.members_private import display_members_private
+from members_private import display_members_private
 
 # Set page layout to wide
 st.set_page_config(layout="wide")
