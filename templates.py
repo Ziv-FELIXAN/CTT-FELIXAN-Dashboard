@@ -42,7 +42,7 @@ def render_table(data, columns, actions=None, actions_field=None, checkbox_key=N
             row += "<td>"
             current_actions = item.get(actions_field, []) if actions_field else actions
             for action in current_actions:
-                row += f"<button class='icon-button' onclick=\"alert('{action['action']}')\" title='{action['title']}'><i class='{action['icon']}'></i></button>"
+                row += f"<button class='icon-button' title='{action['title']}'><i class='{action['icon']}'></i></button>"
                 # Set session state when the action is triggered
                 if st.button("", key=action['action'], help=action['title']):
                     st.session_state[action['action']] = True
