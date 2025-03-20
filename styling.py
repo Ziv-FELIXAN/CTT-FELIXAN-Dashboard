@@ -13,42 +13,61 @@ def apply_styling():
     st.markdown(
         """
         <style>
+        /* General styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            font-size: 14px;
+        }
+        h3 {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        .stButton>button {
+            font-size: 14px;
+            padding: 5px 10px;
+        }
+        .stSelectbox, .stTextInput {
+            font-size: 14px;
+        }
         /* Tabs styling */
         .stTabs [data-baseweb="tab-list"] {
             background-color: #f5f5f5;
-            padding: 5px;
+            padding: 3px;
             border-radius: 5px;
         }
         .stTabs [data-baseweb="tab"] {
-            padding: 10px 20px;
+            padding: 5px 15px;
             margin: 0 2px;
             border-radius: 5px;
-            font-weight: bold;
+            font-size: 14px;
+            font-weight: 500;
         }
         /* Active tab color based on user type */
         .stTabs [data-baseweb="tab"][aria-selected="true"] {
-            background-color: #4CAF50; /* Green for Private */
+            background-color: #2C3E50; /* Default for Management */
             color: white;
         }
         .stTabs [data-baseweb="tab"] {
-            background-color: #4CAF5080; /* 50% opacity for non-active tabs */
+            background-color: #2C3E5080; /* 50% opacity for non-active tabs */
             color: #333;
         }
         /* Table styling */
         .custom-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
+            margin-top: 5px;
             border: 1px solid #E0E0E0;
         }
         .custom-table th, .custom-table td {
             border: 1px solid #E0E0E0;
-            padding: 8px;
+            padding: 5px;
             text-align: left;
+            font-size: 14px;
         }
         .custom-table th {
             background-color: #f1f1f1;
-            font-weight: bold;
+            font-weight: 500;
         }
         .custom-table tr:nth-child(even) {
             background-color: #F5F5F5;
@@ -58,27 +77,32 @@ def apply_styling():
             background-color: #F5F5F5;
             border: 1px solid #E0E0E0;
             border-radius: 5px;
-            padding: 15px;
-            margin: 10px 0;
+            padding: 10px;
+            margin: 5px 0;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
         .overview-card i {
-            font-size: 24px;
-            color: #4CAF50;
+            font-size: 16px;
+            color: #666;
         }
         .overview-card p {
             margin: 0;
-            font-size: 16px;
+            font-size: 14px;
         }
         /* Button styling for icons */
         .icon-button {
             background: none;
             border: none;
             cursor: pointer;
-            font-size: 16px;
-            padding: 5px;
+            font-size: 14px;
+            padding: 3px;
+        }
+        /* Checkbox styling */
+        input[type="checkbox"] {
+            width: 14px;
+            height: 14px;
         }
         </style>
         """,
