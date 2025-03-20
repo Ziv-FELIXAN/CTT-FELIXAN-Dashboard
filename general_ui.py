@@ -9,7 +9,7 @@ def setup_general_ui():
         st.session_state['interface_type'] = 'Management'
     if 'users' not in st.session_state:
         st.session_state['users'] = {
-            "Private": {"type": "Private", "modules": ["Dashboard", "Members", "Loans Regular", "Assets", "Contracts", "Carat", "Triple C"], "color": "#4CAF50"},
+            "Private": {"type": "Private", "modules": ["Dashboard", "Members", "Loans Regular", "Assets", "Contracts", "Carat", "Triple C"], "color": "#E74C3C"},  # Changed to red
             "Business": {"type": "Business", "modules": ["Dashboard", "Members", "Loans Regular", "Carat Letter of Credit", "Assets", "Contracts", "Carat", "Triple C", "Secure Transport", "Bids", "Exchange", "Meeting Room"], "color": "#1E3A8A"},
             "Management": {"type": "Management", "modules": ["Dashboard", "Members", "Loans Regular", "Carat Letter of Credit", "Assets", "Contracts", "Carat", "Triple C", "Insurance", "Transactions Audit", "Secure Transport", "Bids", "Exchange", "System Revenue", "Meeting Room"], "color": "#2C3E50"}
         }
@@ -35,7 +35,7 @@ def setup_general_ui():
         f"<h1 style='color: white;'><i class='fas fa-house'></i> CTT/FELIXAN System Ver3 - {st.session_state['interface_type']}</h1>"
         "<div style='position: absolute; top: 10px; right: 10px;'>"
         "<button style='background: none; border: none; color: white; font-size: 20px; cursor: pointer;' onclick='alert(\"Preferences not implemented yet.\")'><i class='fas fa-cog'></i></button>"
-        " "
+        " "
         "<button style='background: none; border: none; color: white; font-size: 20px; cursor: pointer;' onclick='alert(\"User Management not implemented yet.\")'><i class='fas fa-user-circle'></i></button>"
         "</div>"
         "</div>"
