@@ -1,6 +1,6 @@
 import streamlit as st
 
-def render_table(data, columns, actions=None, checkbox_key=None, key=None):
+def render_table(data, columns, actions=None, actions_field=None, checkbox_key=None, key=None):
     """Render a custom table with optional actions, checkboxes, and a unique key for the download button."""
     st.markdown("<table class='custom-table'>", unsafe_allow_html=True)
     # Table header
@@ -9,7 +9,7 @@ def render_table(data, columns, actions=None, checkbox_key=None, key=None):
         header += "<th>Select</th>"
     for col in columns:
         header += f"<th>{col['name']}</th>"
-    if actions:
+    if actions or actions_field:
         header += "<th>Actions</th>"
     header += "</tr>"
     st.markdown(header, unsafe_allow_html=True)
@@ -38,10 +38,14 @@ def render_table(data, columns, actions=None, checkbox_key=None, key=None):
                 row += f"<td style='{style}'>{value}</td>"
             else:
                 row += f"<td>{value}</td>"
-        if actions:
+        if actions or actions_field:
             row += "<td>"
-            for action in actions:
-                row += f"<button class='icon-button' onclick=\"alert('{action['action']} not implemented yet')\" title='{action['title']}'><i class='{action['icon']}'></i></button>"
+            current_actions = item.get(actions_field, []) if actions_field else actions
+            for action in current_actions:
+                row += f"<button class='icon-button' onclick=\"alert('{action['action']}')\" title='{action['title']}'><i class='{action['icon']}'></i></button>"
+                # Set session state when the action is triggered
+                if st.button("", key=action['action'], help=action['title']):
+                    st.session_state[action['action']] = True
             row += "</td>"
         row += "</tr>"
         st.markdown(row, unsafe_allow_html=True)
