@@ -107,11 +107,13 @@ def display_members_private():
             {"name": "Date", "field": "date"},
             {"name": "Amount", "field": "amount"}
         ]
-        actions = [
-            {"icon": "far fa-edit", "action": f"edit_{activity['id']}", "title": "Edit Activity"},
-            {"icon": "far fa-trash-alt", "action": f"delete_{activity['id']}", "title": "Move to Non-Active"}
-        ]
-        render_table(activities, columns, actions, "selected_activities", key="download_active_activities")
+        # Define actions dynamically for each activity
+        for activity in activities:
+            activity['actions'] = [
+                {"icon": "far fa-edit", "action": f"edit_{activity['id']}", "title": "Edit Activity"},
+                {"icon": "far fa-trash-alt", "action": f"delete_{activity['id']}", "title": "Move to Non-Active"}
+            ]
+        render_table(activities, columns, actions_field="actions", checkbox_key="selected_activities", key="download_active_activities")
 
         # Handle actions
         for activity in activities:
@@ -165,11 +167,13 @@ def display_members_private():
             {"name": "Date", "field": "date", "style": "color: red;"},
             {"name": "Amount", "field": "amount", "style": "color: red;"}
         ]
-        actions = [
-            {"icon": "far fa-undo-alt", "action": f"restore_{activity['id']}", "title": "Restore to Active"},
-            {"icon": "far fa-trash-alt", "action": f"permanent_delete_{activity['id']}", "title": "Permanently Delete"}
-        ]
-        render_table(non_active_activities, columns, actions, "selected_non_active_activities", key="download_non_active_activities")
+        # Define actions dynamically for each non-active activity
+        for activity in non_active_activities:
+            activity['actions'] = [
+                {"icon": "far fa-undo-alt", "action": f"restore_{activity['id']}", "title": "Restore to Active"},
+                {"icon": "far fa-trash-alt", "action": f"permanent_delete_{activity['id']}", "title": "Permanently Delete"}
+            ]
+        render_table(non_active_activities, columns, actions_field="actions", checkbox_key="selected_non_active_activities", key="download_non_active_activities")
 
         # Handle actions
         for activity in non_active_activities:
@@ -242,11 +246,13 @@ def display_members_private():
             {"name": "Date", "field": "date"},
             {"name": "Amount", "field": "amount"}
         ]
-        actions = [
-            {"icon": "far fa-edit", "action": f"edit_completed_{activity['id']}", "title": "Edit Activity"},
-            {"icon": "far fa-trash-alt", "action": f"delete_completed_{activity['id']}", "title": "Delete Activity"}
-        ]
-        render_table(completed_activities, columns, actions, key="download_completed_activities")
+        # Define actions dynamically for each completed activity
+        for activity in completed_activities:
+            activity['actions'] = [
+                {"icon": "far fa-edit", "action": f"edit_completed_{activity['id']}", "title": "Edit Activity"},
+                {"icon": "far fa-trash-alt", "action": f"delete_completed_{activity['id']}", "title": "Delete Activity"}
+            ]
+        render_table(completed_activities, columns, actions_field="actions", key="download_completed_activities")
 
         # Handle actions
         for activity in completed_activities:
