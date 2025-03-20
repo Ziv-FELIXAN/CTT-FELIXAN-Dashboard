@@ -7,7 +7,7 @@ def manage_modules():
         "<style>"
         ".module-nav {display: flex; justify-content: flex-start; gap: 5px; margin-top: 10px; flex-wrap: wrap; align-items: flex-start;}"
         ".module-nav .stButton {margin-right: 5px; flex: 0 0 auto;}"
-        ".module-nav .stButton>button {padding: 8px 16px; background-color: #f1f1f1; border: none; border-radius: 5px; cursor: pointer; text-align: left; width: auto; display: inline-block;}"
+        ".module-nav .stButton>button {padding: 5px 10px; background-color: #f1f1f1; border: none; border-radius: 5px; cursor: pointer; text-align: left; width: auto; display: inline-block; font-size: 14px;}"
         ".module-nav .stButton>button:hover {background-color: #e0e0e0;}"
         ".module-content {border: 1px solid #e6e6e6; padding: 10px; border-radius: 5px;}"
         "</style>",
