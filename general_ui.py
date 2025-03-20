@@ -9,7 +9,7 @@ def setup_general_ui():
         st.session_state['interface_type'] = 'Management'
     if 'users' not in st.session_state:
         st.session_state['users'] = {
-            "Private": {"type": "Private", "modules": ["Dashboard", "Members", "Loans Regular", "Assets", "Contracts", "Carat", "Triple C"], "color": "#E74C3C"},  # Changed to red
+            "Private": {"type": "Private", "modules": ["Dashboard", "Members", "Loans Regular", "Assets", "Contracts", "Carat", "Triple C"], "color": "#E74C3C"},  # Red for Private
             "Business": {"type": "Business", "modules": ["Dashboard", "Members", "Loans Regular", "Carat Letter of Credit", "Assets", "Contracts", "Carat", "Triple C", "Secure Transport", "Bids", "Exchange", "Meeting Room"], "color": "#1E3A8A"},
             "Management": {"type": "Management", "modules": ["Dashboard", "Members", "Loans Regular", "Carat Letter of Credit", "Assets", "Contracts", "Carat", "Triple C", "Insurance", "Transactions Audit", "Secure Transport", "Bids", "Exchange", "System Revenue", "Meeting Room"], "color": "#2C3E50"}
         }
@@ -32,26 +32,26 @@ def setup_general_ui():
     header_color = st.session_state['users'][st.session_state['interface_type']]['color']
     st.markdown(
         f"<div style='background-image: url(\"https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1500&q=80\"); background-size: cover; background-position: center; padding: 20px; text-align: center; position: relative;'>"
-        f"<h1 style='color: white;'><i class='fas fa-house'></i> CTT/FELIXAN System Ver3 - {st.session_state['interface_type']}</h1>"
+        f"<h1 style='color: white; font-size: 24px;'><i class='fas fa-house'></i> CTT/FELIXAN System Ver3 - {st.session_state['interface_type']}</h1>"
         "<div style='position: absolute; top: 10px; right: 10px;'>"
         "<button style='background: none; border: none; color: white; font-size: 20px; cursor: pointer;' onclick='alert(\"Preferences not implemented yet.\")'><i class='fas fa-cog'></i></button>"
         " "
         "<button style='background: none; border: none; color: white; font-size: 20px; cursor: pointer;' onclick='alert(\"User Management not implemented yet.\")'><i class='fas fa-user-circle'></i></button>"
         "</div>"
         "</div>"
-        f"<div style='background-color: {header_color}; height: 20px; width: 100%;'></div>",
+        f"<div style='background-color: {header_color}; height: 15px; width: 100%;'></div>",
         unsafe_allow_html=True
     )
 
     # Spacer
-    st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='margin-top: 15px;'></div>", unsafe_allow_html=True)
 
     # Navigation buttons
     st.markdown(
         "<style>"
-        ".nav-buttons {display: flex; justify-content: flex-start; gap: 5px; margin-top: 20px; flex-wrap: wrap; align-items: flex-start;}"
+        ".nav-buttons {display: flex; justify-content: flex-start; gap: 5px; margin-top: 15px; flex-wrap: wrap; align-items: flex-start;}"
         ".nav-buttons .stButton {margin-right: 5px; flex: 0 0 auto;}"
-        ".nav-buttons .stButton>button {padding: 8px 16px; background-color: #f1f1f1; border: none; border-radius: 5px; cursor: pointer; text-align: left; width: auto; display: inline-block;}"
+        ".nav-buttons .stButton>button {padding: 5px 10px; background-color: #f1f1f1; border: none; border-radius: 5px; cursor: pointer; text-align: left; width: auto; display: inline-block; font-size: 14px;}"
         ".nav-buttons .stButton>button:hover {background-color: #e0e0e0;}"
         "</style>",
         unsafe_allow_html=True
