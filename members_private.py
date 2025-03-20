@@ -57,7 +57,7 @@ def display_members_private():
     non_active_activities = [activity for activity in st.session_state['activities'] if activity['user_id'] == user_id and not activity['is_active']]
     checklist_items = [item for item in st.session_state['checklist'] if item['user_id'] == user_id]
     contracts = [contract for contract in st.session_state['contracts'] if contract['user_id'] == user_id]
-    assets = [asset for asset in st.session_state['assets'] if contract['user_id'] == user_id]
+    assets = [asset for asset in st.session_state['assets'] if asset['user_id'] == user_id]  # Fixed the error here
 
     # Function to log actions
     def log_action(action_type, object_id, details):
