@@ -48,7 +48,7 @@ def display_members_private():
     if 'action_counter' not in st.session_state:
         st.session_state['action_counter'] = 0
 
-    if 'notify_user' not in st.session_state:
+    if 'notify_user' in st.session_state:
         st.session_state['notify_user'] = False  # Default: no notifications
 
     # Get user and filter activities
@@ -100,7 +100,7 @@ def display_members_private():
             {"icon": "fas fa-edit", "action": "edit", "title": "Edit Activity"},
             {"icon": "fas fa-trash-alt", "action": "delete", "title": "Move to Non-Active"}
         ]
-        render_table(activities, columns, actions, "selected_activities")
+        render_table(activities, columns, actions, "selected_activities", key="download_active_activities")
 
         # Handle actions
         for activity in activities:
@@ -160,7 +160,7 @@ def display_members_private():
             {"icon": "fas fa-undo-alt", "action": "restore", "title": "Restore to Active"},
             {"icon": "fas fa-trash-alt", "action": "permanent_delete", "title": "Permanently Delete"}
         ]
-        render_table(non_active_activities, columns, actions, "selected_non_active_activities")
+        render_table(non_active_activities, columns, actions, "selected_non_active_activities", key="download_non_active_activities")
 
         # Handle actions
         for activity in non_active_activities:
@@ -233,7 +233,7 @@ def display_members_private():
             {"icon": "fas fa-edit", "action": "edit_completed", "title": "Edit Activity"},
             {"icon": "fas fa-trash-alt", "action": "delete_completed", "title": "Delete Activity"}
         ]
-        render_table(completed_activities, columns, actions)
+        render_table(completed_activities, columns, actions, key="download_completed_activities")
 
         # Handle actions
         for activity in completed_activities:
@@ -305,7 +305,7 @@ def display_members_private():
                 {"name": "Status", "field": "status", "style": "color: green;" if x['status'] == "Active" else "color: red;"}
             ]
 
-        render_table(items, columns)
+        render_table(items, columns, key="download_related_assets")
 
     # Log tab
     with st.session_state['tabs'][4]:
@@ -327,4 +327,4 @@ def display_members_private():
             {"name": "Details", "field": "details"},
             {"name": "Timestamp", "field": "timestamp"}
         ]
-        render_table(st.session_state['action_log'], columns)
+        render_table(st.session_state['action_log'], columns, key="download_log")
