@@ -1,6 +1,6 @@
 import streamlit as st
 from datetime import datetime
-from templates import render_table, render_summary_card, render_filter, render_checklist
+from templates import render_table, render_summary_card, render_filter, render_checklist, render_document_manager
 
 def display_members_private():
     # Initialize session state for members, activities, checklist, contracts, assets, and log
@@ -76,29 +76,40 @@ def display_members_private():
 
     # Overview tab
     with st.session_state['tabs'][0]:
-        st.write("### Members - Private Individuals")
+        st.markdown(
+            "<div style='border: 1px solid #E0E0E0; border-radius: 5px; padding: 10px; margin-bottom: 10px;'>"
+            "<h3 style='margin-top: 0;'>Members - Private Individuals</h3>",
+            unsafe_allow_html=True
+        )
 
         # Summary cards
-        render_summary_card("fas fa-tasks", "Active Projects", len(activities))
-        render_summary_card("fas fa-exclamation-circle", "Projects Needing Action", sum(1 for item in checklist_items if not item['completed']))
-        render_summary_card("fas fa-archive", "Non-Active Projects", len(non_active_activities))
-        render_summary_card("fas fa-file-alt", "Documents Pending Approval", sum(len(item['documents']) for item in checklist_items))
+        st.markdown("<div style='border: 1px solid #E0E0E0; border-radius: 5px; padding: 10px; margin-bottom: 10px;'>", unsafe_allow_html=True)
+        st.markdown("<h4 style='font-size: 16px; font-weight: 500; margin-top: 0;'>Activity Summary</h4>", unsafe_allow_html=True)
+        render_summary_card("far fa-tasks", "Active Projects", len(activities))
+        render_summary_card("far fa-exclamation-circle", "Projects Needing Action", sum(1 for item in checklist_items if not item['completed']))
+        render_summary_card("far fa-archive", "Non-Active Projects", len(non_active_activities))
+        render_summary_card("far fa-file-alt", "Documents Pending Approval", sum(len(item['documents']) for item in checklist_items))
+        st.markdown("</div>", unsafe_allow_html=True)
 
     # Manage Objects tab
     with st.session_state['tabs'][1]:
-        st.write("### Manage Members Activities")
+        st.markdown(
+            "<div style='border: 1px solid #E0E0E0; border-radius: 5px; padding: 10px; margin-bottom: 10px;'>"
+            "<h3 style='margin-top: 0;'>Manage Members Activities</h3>",
+            unsafe_allow_html=True
+        )
 
         # Display active activities table
-        st.subheader("Active Activities")
+        st.markdown("<h4 style='font-size: 16px; font-weight: 500; margin-top: 0;'>Active Activities</h4>", unsafe_allow_html=True)
         columns = [
-            {"name": "ID", "field": "id"},
+            {"name": "Object ID", "field": "id"},
             {"name": "Activity", "field": "activity"},
             {"name": "Date", "field": "date"},
             {"name": "Amount", "field": "amount"}
         ]
         actions = [
-            {"icon": "fas fa-edit", "action": "edit", "title": "Edit Activity"},
-            {"icon": "fas fa-trash-alt", "action": "delete", "title": "Move to Non-Active"}
+            {"icon": "far fa-edit", "action": "edit", "title": "Edit Activity"},
+            {"icon": "far fa-trash-alt", "action": "delete", "title": "Move to Non-Active"}
         ]
         render_table(activities, columns, actions, "selected_activities", key="download_active_activities")
 
@@ -131,7 +142,7 @@ def display_members_private():
                 st.session_state[f"delete_activity_{activity['id']}"] = True
             if f"delete_activity_{activity['id']}" in st.session_state and st.session_state[f"delete_activity_{activity['id']}"]:
                 with st.form(key=f"delete_activity_form_{activity['id']}"):
-                    st.subheader(f"Delete Activity: {activity['activity']}")
+                    st.subheader(f"Move Activity to Non-Active: {activity['activity']}")
                     st.write("Are you sure you want to move this activity to Non-Active Projects?")
                     confirm_delete = st.text_input("Type the activity name to confirm", placeholder=activity['activity'])
                     delete_submit = st.form_submit_button("Confirm Move to Non-Active")
@@ -149,16 +160,16 @@ def display_members_private():
                             st.error("Activity name does not match. Action cancelled.")
 
         # Display non-active activities table
-        st.subheader("Non-Active Projects")
+        st.markdown("<h4 style='font-size: 16px; font-weight: 500; margin-top: 10px;'>Non-Active Projects</h4>", unsafe_allow_html=True)
         columns = [
-            {"name": "ID", "field": "id"},
+            {"name": "Object ID", "field": "id"},
             {"name": "Activity", "field": "activity", "style": "color: red;"},
             {"name": "Date", "field": "date", "style": "color: red;"},
             {"name": "Amount", "field": "amount", "style": "color: red;"}
         ]
         actions = [
-            {"icon": "fas fa-undo-alt", "action": "restore", "title": "Restore to Active"},
-            {"icon": "fas fa-trash-alt", "action": "permanent_delete", "title": "Permanently Delete"}
+            {"icon": "far fa-undo-alt", "action": "restore", "title": "Restore to Active"},
+            {"icon": "far fa-trash-alt", "action": "permanent_delete", "title": "Permanently Delete"}
         ]
         render_table(non_active_activities, columns, actions, "selected_non_active_activities", key="download_non_active_activities")
 
@@ -204,34 +215,40 @@ def display_members_private():
                         else:
                             st.error("Activity name does not match. Deletion cancelled.")
 
+        st.markdown("</div>", unsafe_allow_html=True)
+
     # Checklist tab
     with st.session_state['tabs'][2]:
-        st.write("### Checklist Management")
+        st.markdown(
+            "<div style='border: 1px solid #E0E0E0; border-radius: 5px; padding: 10px; margin-bottom: 10px;'>"
+            "<h3 style='margin-top: 0;'>Checklist Management</h3>",
+            unsafe_allow_html=True
+        )
 
         # Part 1: Filter and select object
-        st.subheader("Select Object to Manage")
+        st.markdown("<h4 style='font-size: 16px; font-weight: 500; margin-top: 0;'>Select Object to Manage</h4>", unsafe_allow_html=True)
         object_types = ["Loan", "Auction", "Exchange"]
         selected_type, selected_object_id = render_filter(object_types, activities, "checklist_object_type", "checklist_object_select")
 
         # Part 2: Checklist for selected object
         if selected_object_id:
-            st.subheader(f"Checklist for Object ID: {selected_object_id}")
+            st.markdown(f"<h4 style='font-size: 16px; font-weight: 500; margin-top: 10px;'>Checklist for Object ID: {selected_object_id}</h4>", unsafe_allow_html=True)
             render_checklist(checklist_items, selected_object_id, log_action)
 
         # Part 3: Completed projects
-        st.subheader("Completed Projects")
+        st.markdown("<h4 style='font-size: 16px; font-weight: 500; margin-top: 10px;'>Completed Projects</h4>", unsafe_allow_html=True)
         completed_items = [item for item in checklist_items if item['completed']]
         completed_objects = set(item['object_id'] for item in completed_items)
         completed_activities = [activity for activity in st.session_state['activities'] if activity['id'] in completed_objects]
         columns = [
-            {"name": "ID", "field": "id"},
+            {"name": "Object ID", "field": "id"},
             {"name": "Activity", "field": "activity"},
             {"name": "Date", "field": "date"},
             {"name": "Amount", "field": "amount"}
         ]
         actions = [
-            {"icon": "fas fa-edit", "action": "edit_completed", "title": "Edit Activity"},
-            {"icon": "fas fa-trash-alt", "action": "delete_completed", "title": "Delete Activity"}
+            {"icon": "far fa-edit", "action": "edit_completed", "title": "Edit Activity"},
+            {"icon": "far fa-trash-alt", "action": "delete_completed", "title": "Delete Activity"}
         ]
         render_table(completed_activities, columns, actions, key="download_completed_activities")
 
@@ -278,12 +295,18 @@ def display_members_private():
                         else:
                             st.error("Activity name does not match. Deletion cancelled.")
 
+        st.markdown("</div>", unsafe_allow_html=True)
+
     # Related Assets tab
     with st.session_state['tabs'][3]:
-        st.write("### Related Assets for Members")
+        st.markdown(
+            "<div style='border: 1px solid #E0E0E0; border-radius: 5px; padding: 10px; margin-bottom: 10px;'>"
+            "<h3 style='margin-top: 0;'>Related Assets for Members</h3>",
+            unsafe_allow_html=True
+        )
 
         # Filter by module
-        st.subheader("Filter by Module")
+        st.markdown("<h4 style='font-size: 16px; font-weight: 500; margin-top: 0;'>Filter by Module</h4>", unsafe_allow_html=True)
         module_types = ["Contracts", "Assets"]
         selected_module = st.selectbox("Select Module", module_types, key="related_assets_module")
 
@@ -307,19 +330,25 @@ def display_members_private():
 
         render_table(items, columns, key="download_related_assets")
 
+        st.markdown("</div>", unsafe_allow_html=True)
+
     # Log tab
     with st.session_state['tabs'][4]:
-        st.write("### Activity Log")
+        st.markdown(
+            "<div style='border: 1px solid #E0E0E0; border-radius: 5px; padding: 10px; margin-bottom: 10px;'>"
+            "<h3 style='margin-top: 0;'>Activity Log</h3>",
+            unsafe_allow_html=True
+        )
 
         # Option to enable/disable notifications
-        st.subheader("Notification Settings")
+        st.markdown("<h4 style='font-size: 16px; font-weight: 500; margin-top: 0;'>Notification Settings</h4>", unsafe_allow_html=True)
         notify_user = st.checkbox("Send notifications to email/phone for each action", value=st.session_state['notify_user'])
         if notify_user != st.session_state['notify_user']:
             st.session_state['notify_user'] = notify_user
             st.success("Notification settings updated!")
 
         # Display log table
-        st.subheader("Log Entries")
+        st.markdown("<h4 style='font-size: 16px; font-weight: 500; margin-top: 10px;'>Log Entries</h4>", unsafe_allow_html=True)
         columns = [
             {"name": "Action ID", "field": "action_id"},
             {"name": "Action Type", "field": "action_type"},
@@ -328,3 +357,5 @@ def display_members_private():
             {"name": "Timestamp", "field": "timestamp"}
         ]
         render_table(st.session_state['action_log'], columns, key="download_log")
+
+        st.markdown("</div>", unsafe_allow_html=True)
