@@ -52,6 +52,13 @@ def apply_styling():
             background-color: #2C3E5080; /* 50% opacity for non-active tabs */
             color: #333;
         }
+        /* Override for Private (red) */
+        [data-testid="stTabs"] [data-baseweb="tab"][aria-selected="true"] {
+            background-color: #E74C3C !important; /* Red for Private */
+        }
+        [data-testid="stTabs"] [data-baseweb="tab"] {
+            background-color: #E74C3C80 !important; /* 50% opacity for non-active tabs */
+        }
         /* Table styling */
         .custom-table {
             width: 100%;
