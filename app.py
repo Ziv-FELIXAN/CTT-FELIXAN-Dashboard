@@ -9,6 +9,14 @@ try:
 except ImportError as e:
     raise ImportError("Failed to import display_members_private from members_private. Ensure members_private.py exists in the same directory as app.py. Error: " + str(e))
 
+# Add Font Awesome CDN
+st.markdown(
+    """
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    """,
+    unsafe_allow_html=True
+)
+
 # Set page layout to wide
 st.set_page_config(layout="wide")
 
@@ -18,7 +26,7 @@ if 'interface_type' not in st.session_state:
 if 'users' not in st.session_state:
     st.session_state['users'] = {
         "Private": {"type": "Private", "modules": ["Dashboard", "Members", "Loans Regular", "Assets", "Contracts", "Carat", "Triple C"], "color": "#4CAF50"},
-        "Business": {"type": "Business", "modules": ["Dashboard", "Members", "Loans Regular", "Carat Letter of Credit", "Assets", "Contracts", "Carat", "Triple C", "Secure Transport", "Bids", "Exchange", "Meeting Room"], "color": "#F39C12"},
+        "Business": {"type": "Business", "modules": ["Dashboard", "Members", "Loans Regular", "Carat Letter of Credit", "Assets", "Contracts", "Carat", "Triple C", "Secure Transport", "Bids", "Exchange", "Meeting Room"], "color": "#1E3A8A"},  # Changed to dark blue
         "Management": {"type": "Management", "modules": ["Dashboard", "Members", "Loans Regular", "Carat Letter of Credit", "Assets", "Contracts", "Carat", "Triple C", "Insurance", "Transactions Audit", "Secure Transport", "Bids", "Exchange", "System Revenue", "Meeting Room"], "color": "#2C3E50"}
     }
 if 'selected_module' not in st.session_state:
@@ -95,6 +103,10 @@ st.markdown(
     ".module-nav .stButton>button {padding: 8px 16px; background-color: #f1f1f1; border: none; border-radius: 5px; cursor: pointer; text-align: left; width: auto; display: inline-block;}"
     ".module-nav .stButton>button:hover {background-color: #e0e0e0;}"
     ".module-content {border: 1px solid #e6e6e6; padding: 10px; border-radius: 5px;}"
+    ".icon-container {display: flex; flex-wrap: wrap; gap: 20px;}"
+    ".icon-box {text-align: center; width: 150px;}"
+    ".icon-box i {font-size: 24px; margin-bottom: 10px;}"
+    ".icon-box p {margin: 0; font-size: 14px;}"
     "</style>",
     unsafe_allow_html=True
 )
@@ -109,8 +121,8 @@ with module_container:
                 st.session_state['selected_module'] = module
                 st.rerun()
 
-# Main content area with tabs (added "Log" tab)
-st.session_state['tabs'] = st.tabs(["Overview", "Manage Objects", "Checklist", "Related Assets", "Log"])
+# Main content area with tabs (added "Icons Preview" tab)
+st.session_state['tabs'] = st.tabs(["Overview", "Manage Objects", "Checklist", "Related Assets", "Log", "Icons Preview"])
 
 # Display module content based on selection
 if st.session_state['selected_module'] == "Members" and st.session_state['interface_type'] == "Private":
@@ -156,6 +168,72 @@ elif st.session_state['selected_module'] == "Dashboard":
             "</div>",
             unsafe_allow_html=True
         )
+    with st.session_state['tabs'][5]:
+        st.markdown(
+            """
+            <div class='module-content'>
+                <h3>Icons Preview (Font Awesome)</h3>
+                <div class='icon-container'>
+                    <!-- עריכה -->
+                    <div class='icon-box'>
+                        <i class='fas fa-edit'></i>
+                        <p>Edit (Solid)</p>
+                    </div>
+                    <div class='icon-box'>
+                        <i class='far fa-edit'></i>
+                        <p>Edit (Regular)</p>
+                    </div>
+                    <!-- מחיקה -->
+                    <div class='icon-box'>
+                        <i class='fas fa-trash-alt'></i>
+                        <p>Trash (Solid)</p>
+                    </div>
+                    <div class='icon-box'>
+                        <i class='far fa-trash-alt'></i>
+                        <p>Trash (Regular)</p>
+                    </div>
+                    <!-- שחזור -->
+                    <div class='icon-box'>
+                        <i class='fas fa-undo-alt'></i>
+                        <p>Undo (Solid)</p>
+                    </div>
+                    <div class='icon-box'>
+                        <i class='far fa-undo-alt'></i>
+                        <p>Undo (Regular)</p>
+                    </div>
+                    <!-- מסמכים -->
+                    <div class='icon-box'>
+                        <i class='fas fa-paperclip'></i>
+                        <p>Paperclip</p>
+                    </div>
+                    <div class='icon-box'>
+                        <i class='fas fa-file-upload'></i>
+                        <p>File Upload</p>
+                    </div>
+                    <!-- סינון -->
+                    <div class='icon-box'>
+                        <i class='fas fa-filter'></i>
+                        <p>Filter</p>
+                    </div>
+                    <!-- משתמש -->
+                    <div class='icon-box'>
+                        <i class='fas fa-user-circle'></i>
+                        <p>User</p>
+                    </div>
+                    <!-- סיכום -->
+                    <div class='icon-box'>
+                        <i class='fas fa-tasks'></i>
+                        <p>Tasks</p>
+                    </div>
+                    <div class='icon-box'>
+                        <i class='fas fa-chart-pie'></i>
+                        <p>Chart Pie</p>
+                    </div>
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 else:
     with st.session_state['tabs'][0]:
         st.markdown(
@@ -195,6 +273,72 @@ else:
             "<h3>Activity Log</h3>"
             "<p>No activities logged yet for this module.</p>"
             "</div>",
+            unsafe_allow_html=True
+        )
+    with st.session_state['tabs'][5]:
+        st.markdown(
+            """
+            <div class='module-content'>
+                <h3>Icons Preview (Font Awesome)</h3>
+                <div class='icon-container'>
+                    <!-- עריכה -->
+                    <div class='icon-box'>
+                        <i class='fas fa-edit'></i>
+                        <p>Edit (Solid)</p>
+                    </div>
+                    <div class='icon-box'>
+                        <i class='far fa-edit'></i>
+                        <p>Edit (Regular)</p>
+                    </div>
+                    <!-- מחיקה -->
+                    <div class='icon-box'>
+                        <i class='fas fa-trash-alt'></i>
+                        <p>Trash (Solid)</p>
+                    </div>
+                    <div class='icon-box'>
+                        <i class='far fa-trash-alt'></i>
+                        <p>Trash (Regular)</p>
+                    </div>
+                    <!-- שחזור -->
+                    <div class='icon-box'>
+                        <i class='fas fa-undo-alt'></i>
+                        <p>Undo (Solid)</p>
+                    </div>
+                    <div class='icon-box'>
+                        <i class='far fa-undo-alt'></i>
+                        <p>Undo (Regular)</p>
+                    </div>
+                    <!-- מסמכים -->
+                    <div class='icon-box'>
+                        <i class='fas fa-paperclip'></i>
+                        <p>Paperclip</p>
+                    </div>
+                    <div class='icon-box'>
+                        <i class='fas fa-file-upload'></i>
+                        <p>File Upload</p>
+                    </div>
+                    <!-- סינון -->
+                    <div class='icon-box'>
+                        <i class='fas fa-filter'></i>
+                        <p>Filter</p>
+                    </div>
+                    <!-- משתמש -->
+                    <div class='icon-box'>
+                        <i class='fas fa-user-circle'></i>
+                        <p>User</p>
+                    </div>
+                    <!-- סיכום -->
+                    <div class='icon-box'>
+                        <i class='fas fa-tasks'></i>
+                        <p>Tasks</p>
+                    </div>
+                    <div class='icon-box'>
+                        <i class='fas fa-chart-pie'></i>
+                        <p>Chart Pie</p>
+                    </div>
+                </div>
+            </div>
+            """,
             unsafe_allow_html=True
         )
 
