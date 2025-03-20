@@ -51,7 +51,7 @@ st.markdown(
     f"<h1 style='color: white;'><i class='fas fa-house'></i> CTT/FELIXAN System Ver3 - {st.session_state['interface_type']}</h1>"
     "<div style='position: absolute; top: 10px; right: 10px;'>"
     "<button style='background: none; border: none; color: white; font-size: 20px; cursor: pointer;' onclick='alert(\"Preferences not implemented yet.\")'>⚙️</button>"
-    " "
+    " "
     "<button style='background: none; border: none; color: white; font-size: 20px; cursor: pointer;' onclick='alert(\"User Management not implemented yet.\")'>👤</button>"
     "</div>"
     "</div>"
