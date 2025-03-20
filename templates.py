@@ -1,7 +1,7 @@
 import streamlit as st
 
-def render_table(data, columns, actions=None, checkbox_key=None):
-    """Render a custom table with optional actions and checkboxes."""
+def render_table(data, columns, actions=None, checkbox_key=None, key=None):
+    """Render a custom table with optional actions, checkboxes, and a unique key for the download button."""
     st.markdown("<table class='custom-table'>", unsafe_allow_html=True)
     # Table header
     header = "<tr>"
@@ -31,6 +31,8 @@ def render_table(data, columns, actions=None, checkbox_key=None):
                     st.session_state[checkbox_key].remove(item['id'])
         for col in columns:
             value = item.get(col['field'], 'N/A')
+            if 'format' in col:
+                value = col['format'](item)
             if col.get('style'):
                 row += f"<td style='{col['style']}'>{value}</td>"
             else:
@@ -44,10 +46,10 @@ def render_table(data, columns, actions=None, checkbox_key=None):
         st.markdown(row, unsafe_allow_html=True)
     st.markdown("</table>", unsafe_allow_html=True)
 
-    # Add CSV download button
+    # Add CSV download button with a unique key
     if data:
         csv = "\n".join([",".join([col['name'] for col in columns])] + [",".join([str(item.get(col['field'], 'N/A')) for col in columns]) for item in data])
-        st.download_button("Download as CSV", csv, "table.csv", "text/csv")
+        st.download_button("Download as CSV", csv, "table.csv", "text/csv", key=key)
 
 def render_summary_card(icon, title, value):
     """Render a summary card for the Overview tab."""
