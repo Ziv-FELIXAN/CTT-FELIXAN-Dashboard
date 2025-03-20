@@ -48,7 +48,7 @@ def display_members_private():
     if 'action_counter' not in st.session_state:
         st.session_state['action_counter'] = 0
 
-    if 'notify_user' in st.session_state:
+    if 'notify_user' not in st.session_state:
         st.session_state['notify_user'] = False  # Default: no notifications
 
     # Get user and filter activities
@@ -294,7 +294,7 @@ def display_members_private():
                 {"name": "ID", "field": "id"},
                 {"name": "Description", "field": "description"},
                 {"name": "Details", "field": "date", "format": lambda x: f"{x['date']} | {x['amount']}"},
-                {"name": "Status", "field": "status", "style": "color: green;" if x['status'] == "Active" else "color: red;"}
+                {"name": "Status", "field": "status", "style": lambda x: "color: green;" if x['status'] == "Active" else "color: red;"}
             ]
         else:
             items = assets
@@ -302,7 +302,7 @@ def display_members_private():
                 {"name": "ID", "field": "id"},
                 {"name": "Description", "field": "description"},
                 {"name": "Details", "field": "value", "format": lambda x: f"Value: {x['value']}"},
-                {"name": "Status", "field": "status", "style": "color: green;" if x['status'] == "Active" else "color: red;"}
+                {"name": "Status", "field": "status", "style": lambda x: "color: green;" if x['status'] == "Active" else "color: red;"}
             ]
 
         render_table(items, columns, key="download_related_assets")
