@@ -75,10 +75,10 @@ def render_summary_card(icon, title, value):
 
 def render_filter(types, objects, type_key, object_key, type_label="Select Object Type", object_label="Select Object"):
     """Render a filter with two dropdowns."""
-    selected_type = st.selectbox(type_label, types, key=type_key)
+    selected_type = st.selectbox(type_label, types, key=type_key, label_visibility="visible")
     filtered_objects = [obj for obj in objects if selected_type.lower() in obj['activity'].lower()]
     object_ids = [obj['id'] for obj in filtered_objects]
-    selected_object_id = st.selectbox(object_label, object_ids, format_func=lambda x: next(obj['activity'] for obj in filtered_objects if obj['id'] == x), key=object_key)
+    selected_object_id = st.selectbox(object_label, object_ids, format_func=lambda x: next(obj['activity'] for obj in filtered_objects if obj['id'] == x), key=object_key, label_visibility="visible")
     return selected_type, selected_object_id
 
 def render_document_manager(item_id, documents):
@@ -155,6 +155,6 @@ def render_checklist(items, object_id, log_action):
         "<div style='background-color: #e0e0e0; height: 15px; width: 50%; border-radius: 5px; margin-top: 10px;'>"
         f"<div style='background-color: #E74C3C; height: 15px; width: {progress}%; border-radius: 5px;'></div>"
         "</div>"
-        f"<p style='font-size: 14px; margin-top: 5px;'>Progress: {progress:.0f}%</p>",
+        f"<p style='font-size: 13px; margin-top: 5px;'>Progress: {progress:.0f}%</p>",
         unsafe_allow_html=True
     )
