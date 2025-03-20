@@ -34,7 +34,8 @@ def render_table(data, columns, actions=None, checkbox_key=None, key=None):
             if 'format' in col:
                 value = col['format'](item)
             if col.get('style'):
-                row += f"<td style='{col['style']}'>{value}</td>"
+                style = col['style'](item) if callable(col['style']) else col['style']
+                row += f"<td style='{style}'>{value}</td>"
             else:
                 row += f"<td>{value}</td>"
         if actions:
@@ -46,10 +47,17 @@ def render_table(data, columns, actions=None, checkbox_key=None, key=None):
         st.markdown(row, unsafe_allow_html=True)
     st.markdown("</table>", unsafe_allow_html=True)
 
-    # Add CSV download button with a unique key
+    # Add CSV download button with an icon
     if data:
         csv = "\n".join([",".join([col['name'] for col in columns])] + [",".join([str(item.get(col['field'], 'N/A')) for col in columns]) for item in data])
-        st.download_button("Download as CSV", csv, "table.csv", "text/csv", key=key)
+        st.download_button(
+            label="Download as CSV <i class='fas fa-download' style='margin-left: 5px;'></i>",
+            data=csv,
+            file_name="table.csv",
+            mime="text/csv",
+            key=key,
+            use_container_width=False
+        )
 
 def render_summary_card(icon, title, value):
     """Render a summary card for the Overview tab."""
@@ -85,15 +93,30 @@ def render_document_manager(item_id, documents):
     if documents:
         st.write("Uploaded Documents:")
         for doc in documents:
-            col1, col2, col3 = st.columns([2, 2, 1])
+            col1, col2, col3, col4 = st.columns([2, 2, 1, 1])
             with col1:
                 st.write(doc['name'])
             with col2:
                 st.write(f"Notes: {doc['notes']}")
             with col3:
+                if st.button("Edit", key=f"edit_doc_{item_id}_{doc['name']}"):
+                    st.session_state[f"edit_doc_{item_id}_{doc['name']}"] = True
+            with col4:
                 if st.button("Delete", key=f"delete_doc_{item_id}_{doc['name']}"):
                     documents.remove(doc)
                     st.rerun()
+
+            # Edit document notes
+            if f"edit_doc_{item_id}_{doc['name']}" in st.session_state and st.session_state[f"edit_doc_{item_id}_{doc['name']}"]:
+                with st.form(key=f"edit_doc_form_{item_id}_{doc['name']}"):
+                    st.subheader(f"Edit Document: {doc['name']}")
+                    new_notes = st.text_area("Notes", value=doc['notes'], key=f"edit_notes_{item_id}_{doc['name']}")
+                    edit_submit = st.form_submit_button("Save Changes")
+                    if edit_submit:
+                        doc['notes'] = new_notes
+                        st.success("Document notes updated successfully!")
+                        st.session_state[f"edit_doc_{item_id}_{doc['name']}"] = False
+                        st.rerun()
 
 def render_checklist(items, object_id, log_action):
     """Render a checklist with steps and document management."""
@@ -118,16 +141,16 @@ def render_checklist(items, object_id, log_action):
         with col3:
             if st.button("", key=f"docs_{item['id']}", help="Manage Documents"):
                 st.session_state[f"manage_docs_{item['id']}"] = True
-            st.markdown("<i class='fas fa-paperclip'></i>", unsafe_allow_html=True)
+            st.markdown("<i class='far fa-paperclip'></i>", unsafe_allow_html=True)
 
         # Manage documents
         if f"manage_docs_{item['id']}" in st.session_state and st.session_state[f"manage_docs_{item['id']}"]:
             render_document_manager(item['id'], item['documents'])
 
     st.markdown(
-        "<div style='background-color: #e0e0e0; height: 20px; width: 50%; border-radius: 10px;'>"
-        f"<div style='background-color: #4CAF50; height: 20px; width: {progress}%; border-radius: 10px;'></div>"
+        "<div style='background-color: #e0e0e0; height: 15px; width: 50%; border-radius: 5px; margin-top: 10px;'>"
+        f"<div style='background-color: #E74C3C; height: 15px; width: {progress}%; border-radius: 5px;'></div>"
         "</div>"
-        f"<p>Progress: {progress:.0f}%</p>",
+        f"<p style='font-size: 14px; margin-top: 5px;'>Progress: {progress:.0f}%</p>",
         unsafe_allow_html=True
     )
