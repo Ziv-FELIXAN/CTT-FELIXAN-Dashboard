@@ -77,14 +77,14 @@ def display_members_private():
     # Overview tab
     with st.session_state['tabs'][0]:
         st.markdown(
-            "<div style='border: 1px solid #E0E0E0; border-radius: 5px; padding: 10px; margin-bottom: 10px;'>"
+            "<div style='border: 1px solid #E0E0E0; border-radius: 4px; padding: 8px; margin-bottom: 8px;'>"
             "<h3 style='margin-top: 0;'>Members - Private Individuals</h3>",
             unsafe_allow_html=True
         )
 
         # Summary cards
-        st.markdown("<div style='border: 1px solid #E0E0E0; border-radius: 5px; padding: 10px; margin-bottom: 10px;'>", unsafe_allow_html=True)
-        st.markdown("<h4 style='font-size: 16px; font-weight: 500; margin-top: 0;'>Activity Summary</h4>", unsafe_allow_html=True)
+        st.markdown("<div style='border: 1px solid #E0E0E0; border-radius: 4px; padding: 8px; margin-bottom: 8px;'>", unsafe_allow_html=True)
+        st.markdown("<h4 style='font-size: 14px; font-weight: 500; margin-top: 0;'>Activity Summary</h4>", unsafe_allow_html=True)
         render_summary_card("far fa-tasks", "Active Projects", len(activities))
         render_summary_card("far fa-exclamation-circle", "Projects Needing Action", sum(1 for item in checklist_items if not item['completed']))
         render_summary_card("far fa-archive", "Non-Active Projects", len(non_active_activities))
@@ -94,13 +94,13 @@ def display_members_private():
     # Manage Objects tab
     with st.session_state['tabs'][1]:
         st.markdown(
-            "<div style='border: 1px solid #E0E0E0; border-radius: 5px; padding: 10px; margin-bottom: 10px;'>"
+            "<div style='border: 1px solid #E0E0E0; border-radius: 4px; padding: 8px; margin-bottom: 8px;'>"
             "<h3 style='margin-top: 0;'>Manage Members Activities</h3>",
             unsafe_allow_html=True
         )
 
         # Display active activities table
-        st.markdown("<h4 style='font-size: 16px; font-weight: 500; margin-top: 0;'>Active Activities</h4>", unsafe_allow_html=True)
+        st.markdown("<h4 style='font-size: 14px; font-weight: 500; margin-top: 0;'>Active Activities</h4>", unsafe_allow_html=True)
         columns = [
             {"name": "Object ID", "field": "id"},
             {"name": "Activity", "field": "activity"},
@@ -160,7 +160,7 @@ def display_members_private():
                             st.error("Activity name does not match. Action cancelled.")
 
         # Display non-active activities table
-        st.markdown("<h4 style='font-size: 16px; font-weight: 500; margin-top: 10px;'>Non-Active Projects</h4>", unsafe_allow_html=True)
+        st.markdown("<h4 style='font-size: 14px; font-weight: 500; margin-top: 8px;'>Non-Active Projects</h4>", unsafe_allow_html=True)
         columns = [
             {"name": "Object ID", "field": "id"},
             {"name": "Activity", "field": "activity", "style": "color: red;"},
@@ -220,23 +220,23 @@ def display_members_private():
     # Checklist tab
     with st.session_state['tabs'][2]:
         st.markdown(
-            "<div style='border: 1px solid #E0E0E0; border-radius: 5px; padding: 10px; margin-bottom: 10px;'>"
+            "<div style='border: 1px solid #E0E0E0; border-radius: 4px; padding: 8px; margin-bottom: 8px;'>"
             "<h3 style='margin-top: 0;'>Checklist Management</h3>",
             unsafe_allow_html=True
         )
 
         # Part 1: Filter and select object
-        st.markdown("<h4 style='font-size: 16px; font-weight: 500; margin-top: 0;'>Select Object to Manage</h4>", unsafe_allow_html=True)
+        st.markdown("<h4 style='font-size: 14px; font-weight: 500; margin-top: 0;'>Select Object to Manage</h4>", unsafe_allow_html=True)
         object_types = ["Loan", "Auction", "Exchange"]
         selected_type, selected_object_id = render_filter(object_types, activities, "checklist_object_type", "checklist_object_select")
 
         # Part 2: Checklist for selected object
         if selected_object_id:
-            st.markdown(f"<h4 style='font-size: 16px; font-weight: 500; margin-top: 10px;'>Checklist for Object ID: {selected_object_id}</h4>", unsafe_allow_html=True)
+            st.markdown(f"<h4 style='font-size: 14px; font-weight: 500; margin-top: 8px;'>Checklist for Object ID: {selected_object_id}</h4>", unsafe_allow_html=True)
             render_checklist(checklist_items, selected_object_id, log_action)
 
         # Part 3: Completed projects
-        st.markdown("<h4 style='font-size: 16px; font-weight: 500; margin-top: 10px;'>Completed Projects</h4>", unsafe_allow_html=True)
+        st.markdown("<h4 style='font-size: 14px; font-weight: 500; margin-top: 8px;'>Completed Projects</h4>", unsafe_allow_html=True)
         completed_items = [item for item in checklist_items if item['completed']]
         completed_objects = set(item['object_id'] for item in completed_items)
         completed_activities = [activity for activity in st.session_state['activities'] if activity['id'] in completed_objects]
@@ -300,13 +300,13 @@ def display_members_private():
     # Related Assets tab
     with st.session_state['tabs'][3]:
         st.markdown(
-            "<div style='border: 1px solid #E0E0E0; border-radius: 5px; padding: 10px; margin-bottom: 10px;'>"
+            "<div style='border: 1px solid #E0E0E0; border-radius: 4px; padding: 8px; margin-bottom: 8px;'>"
             "<h3 style='margin-top: 0;'>Related Assets for Members</h3>",
             unsafe_allow_html=True
         )
 
         # Filter by module
-        st.markdown("<h4 style='font-size: 16px; font-weight: 500; margin-top: 0;'>Filter by Module</h4>", unsafe_allow_html=True)
+        st.markdown("<h4 style='font-size: 14px; font-weight: 500; margin-top: 0;'>Filter by Module</h4>", unsafe_allow_html=True)
         module_types = ["Contracts", "Assets"]
         selected_module = st.selectbox("Select Module", module_types, key="related_assets_module")
 
@@ -335,20 +335,20 @@ def display_members_private():
     # Log tab
     with st.session_state['tabs'][4]:
         st.markdown(
-            "<div style='border: 1px solid #E0E0E0; border-radius: 5px; padding: 10px; margin-bottom: 10px;'>"
+            "<div style='border: 1px solid #E0E0E0; border-radius: 4px; padding: 8px; margin-bottom: 8px;'>"
             "<h3 style='margin-top: 0;'>Activity Log</h3>",
             unsafe_allow_html=True
         )
 
         # Option to enable/disable notifications
-        st.markdown("<h4 style='font-size: 16px; font-weight: 500; margin-top: 0;'>Notification Settings</h4>", unsafe_allow_html=True)
+        st.markdown("<h4 style='font-size: 14px; font-weight: 500; margin-top: 0;'>Notification Settings</h4>", unsafe_allow_html=True)
         notify_user = st.checkbox("Send notifications to email/phone for each action", value=st.session_state['notify_user'])
         if notify_user != st.session_state['notify_user']:
             st.session_state['notify_user'] = notify_user
             st.success("Notification settings updated!")
 
         # Display log table
-        st.markdown("<h4 style='font-size: 16px; font-weight: 500; margin-top: 10px;'>Log Entries</h4>", unsafe_allow_html=True)
+        st.markdown("<h4 style='font-size: 14px; font-weight: 500; margin-top: 8px;'>Log Entries</h4>", unsafe_allow_html=True)
         columns = [
             {"name": "Action ID", "field": "action_id"},
             {"name": "Action Type", "field": "action_type"},
