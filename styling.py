@@ -23,6 +23,11 @@ def apply_styling():
             font-weight: 500;
             margin-bottom: 10px;
         }
+        h4 {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
         .stButton>button {
             font-size: 14px;
             padding: 5px 10px;
